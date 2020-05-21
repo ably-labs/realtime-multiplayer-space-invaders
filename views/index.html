@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Space Invaders</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Multiplayer space invaders" />
+    <link
+      id="favicon"
+      rel="icon"
+      href="https://glitch.com/edit/favicon-app.ico"
+      type="image/x-icon"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
+    <script
+      lang="text/javascript"
+      src="https://cdn.ably.io/lib/ably.min-1.js"
+    ></script>
+    <script src="/nickname.js"></script>
+    <script src="/explosion.js"></script>
+    <script src="/script.js" defer></script>
+  </head>
+  <body class="index-body">
+    <div>
+      <div style="float:left"><span id="score">Score: 0</span></div>
+      <div style="float:right"><span id="join-leave-updates"></span></div>
+      <div style="float:right"><span id="deaths"></span></div>
+    </div>
+    <br />
+    <div class="game-div" id="gameContainer"></div>
+  </body>
+</html>
