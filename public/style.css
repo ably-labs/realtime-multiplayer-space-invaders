@@ -1,0 +1,123 @@
+* {
+  box-sizing: border-box;
+}
+
+h1 {
+  font-style: italic;
+  color: #373fff;
+  max-width: calc(100% - 5rem);
+  line-height: 1.1;
+}
+
+form {
+  background-color: #eee;
+  display: grid;
+  grid-gap: 1em;
+  padding: 1em;
+  max-width: 40ch;
+}
+
+input {
+  border: 1px solid silver;
+  display: block;
+  font-size: 16px;
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 100%;
+}
+
+form button {
+  background-color: #bbbbf2;
+  border: 2px solid currentColor;
+  border-radius: 0.25em;
+  cursor: pointer;
+  font-size: inherit;
+  line-height: 1.4em;
+  padding: 0.25em 1em;
+  max-width: 20ch;
+}
+
+form button:hover {
+  background-color: lavender;
+}
+
+footer {
+  margin-top: 3em;
+  padding-top: 1.5em;
+  border-top: 1px solid lightgrey;
+}
+
+.intro-body {
+  background-color: black;
+  color: #FFF;
+  font-family: "VT323";
+  font-size: 22px;
+  text-align: center;
+  background-image: url("https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2FScreenshot%202020-05-19%20at%2013.36.26.png?v=1589892011044");
+}
+
+.room-full-body {
+  background-color: black;
+  color: #FFF;
+  font-family: "VT323";
+  font-size: 52px;
+  text-align: center;
+  background-image: url("https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2FScreenshot%202020-05-19%20at%2013.36.26.png?v=1589892011044");
+}
+
+.index-body {
+  background-color: black;
+  color: #FFF;
+  font-family: "VT323";
+  font-size: 22px;
+}
+
+.game-instructions {
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+
+.nickname-input {
+  width: 20%;
+  margin: 0 auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.game-div {
+  text-align: center;
+  border-style: solid;
+  border-color: #FFF;
+}
+
+.game-headline-left {
+  float: left;
+}
+
+.game-headline-right {
+  float: right;
+}
+
+.winner-body {
+  background-color: black;
+  color: #FFF;
+  font-family: "VT323";
+  font-size: 62px;
+  text-align: center;
+  background-image: url("https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2FScreenshot%202020-05-19%20at%2013.36.26.png?v=1589892011044");
+}
+
+.winner-div {
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 20px;
+  font-size: 82px;
+}
+
+.runner-ups-div {
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 20px;
+  font-size: 42px;
+}
