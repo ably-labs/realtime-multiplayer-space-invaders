@@ -3,14 +3,25 @@ let firstRunnerUp = localStorage.getItem("firstRunnerUp");
 let secondRunnerUp = localStorage.getItem("secondRunnerUp");
 let totalPlayers = localStorage.getItem("totalPlayers");
 
-document.getElementById("winner-announcement").innerHTML =
-  winner + " won the game!";
 
-if (firstRunnerUp){
+
+if(winner != "Nobody"){
+  document.getElementById("winner-announcement").innerHTML =
+  winner + " won the game!";
+  
+  if (firstRunnerUp){
+    document.getElementById("first-runnerup").innerHTML =
+      firstRunnerUp + " is the first runner up!";
+  }
+  if (secondRunnerUp) {
+    document.getElementById("second-runnerup").innerHTML =
+      secondRunnerUp + " is the second runner up!";
+  }
+} else {
+  document.getElementById("winner-announcement").innerHTML =
+  "EVERYBODY DIED!";
+  
   document.getElementById("first-runnerup").innerHTML =
-    firstRunnerUp + " is the first runner up!";
+  "ABLY SUCKS AT THIS GAME :P";
 }
-if (secondRunnerUp) {
-  document.getElementById("second-runnerup").innerHTML =
-    secondRunnerUp + " is the second runner up!";
-}
+

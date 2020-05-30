@@ -1,5 +1,5 @@
 const realtime = Ably.Realtime({
-  authUrl: "https://realtime-space-invaders.glitch.me/auth"
+  authUrl: "https://space-invaders-ably.glitch.me/auth"
 });
 
 const gameRoom = realtime.channels.get("game-room");
@@ -16,7 +16,6 @@ realtime.connection.once("connected", () => {
   myChannel = realtime.channels.get("clientChannel-" + myClientId);
 });
 
-
 let hasGameStarted = false;
 let addedPreviousPlayers = false;
 
@@ -27,7 +26,8 @@ let addedPreviousPlayers = false;
     y: 0,
     invaderAvatarType: "A",
     invaderAvatarColor: "green",
-    score: 0
+    score: 0,
+    nickname: ""
   }
 */
 let players = {};
@@ -182,12 +182,12 @@ class GameScene extends Phaser.Scene {
       hideOnComplete: true
     });
 
-// ----- start Ably channel subscriptions
-    
+    // ----- start Ably channel subscriptions
+
     //subscribe to constantly changing game state from the server
     gameRoom.subscribe("game-state", msg => {
       //add the ship when the game first starts
-      if (!hasGameStarted) {
+      if (msg.data.startGame == true && !hasGameStarted) {
         hasGameStarted = true;
         this.shipBody = this.physics.add
           .sprite(msg.data.shipBody["0"], config.height - 32, "ship")
@@ -195,24 +195,30 @@ class GameScene extends Phaser.Scene {
         this.shipBody.x = msg.data.shipBody["0"];
         currentShipPos = msg.data.shipBody["0"];
       }
+
+      if (msg.data.startGame == false) {
+        hasGameStarted = false;
+      }
+
       //save the position of the ship in a global variable on the client-side
       if (msg.data.shipBody["0"]) {
         currentShipPos = msg.data.shipBody["0"];
       }
+
       //save the players info in a global variable on the client-side
       players = msg.data.players;
       playerCount = msg.data.playerCount;
-      
+
       //add avatars for existing players
       if (!addedPreviousPlayers) {
         this.addPreviousPlayers();
       }
-      
+
       //shoot bullets if the server says so
-      if (msg.data.bullet != "") {
+      if (msg.data.bullet != "" && hasGameStarted == true) {
         this.shootBullets(msg.data.bullet);
       }
-      
+
       //display the updated score of the player
       if (msg.data.players[myClientId]) {
         document.getElementById("score").innerHTML =
@@ -222,31 +228,36 @@ class GameScene extends Phaser.Scene {
 
     //subscribe to players joining the game after the current player has joined
     gameRoom.subscribe("player-join", msg => {
-      let avatarName =
-        "avatar" + msg.data.invaderAvatarType + msg.data.invaderAvatarColor;
-      this.avatars[msg.data.id] = this.physics.add
-        .sprite(msg.data.x, msg.data.y, avatarName)
-        .setOrigin(0.5, 0.5);
-      this.avatars[msg.data.id].setCollideWorldBounds(true);
-      
-      //flash an update about a player joining
-      if (msg.data.nickname != myNickname) {
+      let avatarName;
+      if (msg.data.id != myClientId) {
+        avatarName =
+          "avatar" + msg.data.invaderAvatarType + msg.data.invaderAvatarColor;
+        this.avatars[msg.data.id] = this.physics.add
+          .sprite(msg.data.x, msg.data.y, avatarName)
+          .setOrigin(0.5, 0.5);
+        this.avatars[msg.data.id].setCollideWorldBounds(true);
         document.getElementById("join-leave-updates").innerHTML =
           msg.data.nickname + " joined the game";
         setTimeout(() => {
           document.getElementById("join-leave-updates").innerHTML = "";
         }, 2000);
+      } else if (msg.data.id == myClientId) {
+        avatarName = "avatar" + msg.data.invaderAvatarType;
+        this.avatars[msg.data.id] = this.physics.add
+          .sprite(msg.data.x, msg.data.y, avatarName)
+          .setOrigin(0.5, 0.5);
+        this.avatars[msg.data.id].setCollideWorldBounds(true);
       }
     });
-    
+
     //subscribe to players dropping off the game
     gameRoom.subscribe("player-leave", msg => {
       //flash an update about a player leaving
-      document.getElementById("join-leave-updates").innerHTML =
-        msg.data.nickname + " left the game";
-      setTimeout(() => {
-        document.getElementById("join-leave-updates").innerHTML = "";
-      }, 2000);
+      //document.getElementById("join-leave-updates").innerHTML =
+      //msg.data.nickname + " left the game";
+      //setTimeout(() => {
+      // document.getElementById("join-leave-updates").innerHTML = "";
+      // }, 2000);
       this.avatars[msg.data.id].destroy();
       delete players[msg.data.id];
     });
@@ -254,35 +265,38 @@ class GameScene extends Phaser.Scene {
     //subscribe to someone finishing the game
     gameRoom.subscribe("game-over", msg => {
       isGameOver = true;
-      if(msg.data.winner == "timeout"){
+      console.log('game over')
+      if (msg.data.winner == "alldead") {
         localStorage.setItem("winner", "Nobody");
+        console.log('all dead')
+        console.log(`${JSON.stringify(players)}`)
         //check the score of players still in the game and sort them
-        let leftOverPlayers = new Array();
-        for (let item in players) {
-          let playerId = players[item].id;
-          leftOverPlayers.push({
-            nickname: players[playerId].nickname,
-            score: players[playerId].score
-          });
-        }
-        let totalPlayers = leftOverPlayers.length;
-        localStorage.setItem("totalPlayers", totalPlayers);
-        leftOverPlayers.sort((a, b) => {
-          return b.score - a.score;
-        });
+//         let leftOverPlayers = new Array();
+//         for (let item in players) {
+//           let playerId = players[item].id;
+//           console.log(`playerId ${playerId}`)
+//           leftOverPlayers.push({
+//             nickname: players[playerId].nickname,
+//             score: players[playerId].score
+//           });
+//         }
+//         let totalPlayers = leftOverPlayers.length;
+//         console.log(`total players ${JSON.stringify(players)}`);
+//         localStorage.setItem("totalPlayers", totalPlayers);
+//         leftOverPlayers.sort((a, b) => {
+//           return b.score - a.score;
+//         });
 
-        //set runner up info
-        if (totalPlayers >= 3) {
-          localStorage.setItem("firstRunnerUp", leftOverPlayers[0].nickname);
-          localStorage.setItem("secondRunnerUp", leftOverPlayers[1].nickname);
-        } else if (totalPlayers == 2) {
-          localStorage.setItem("firstRunnerUp", leftOverPlayers[0].nickname);
-        }
+//         //set runner up info
+//         if (totalPlayers >= 2) {
+//           localStorage.setItem("firstRunnerUp", leftOverPlayers[0].nickname);
+//           localStorage.setItem("secondRunnerUp", leftOverPlayers[1].nickname);
+//         } else if (totalPlayers == 1) {
+//           localStorage.setItem("firstRunnerUp", leftOverPlayers[0].nickname);
+//         }
         //switch to the winner screen
-        window.location.replace(
-          "https://realtime-space-invaders.glitch.me/gameover"
-        );
-      }else{
+        window.location.replace("https://space-invaders-ably.glitch.me/winner");
+      } else {
         localStorage.setItem("winner", players[msg.data.winner].nickname);
         //check the score of players still in the game and sort them
         let leftOverPlayers = new Array();
@@ -294,6 +308,7 @@ class GameScene extends Phaser.Scene {
           });
         }
         let totalPlayers = leftOverPlayers.length;
+        console.log(`total players ${totalPlayers}`);
         localStorage.setItem("totalPlayers", totalPlayers);
         leftOverPlayers.sort((a, b) => {
           return b.score - a.score;
@@ -307,29 +322,31 @@ class GameScene extends Phaser.Scene {
           localStorage.setItem("firstRunnerUp", leftOverPlayers[1].nickname);
         }
         //switch to the winner screen
-        window.location.replace(
-          "https://realtime-space-invaders.glitch.me/winner"
-        );
+        window.location.replace("https://space-invaders-ably.glitch.me/winner");
       }
- 
     });
 
     //subscribe to any player dying
     deadPlayerCh.subscribe("dead-notif-fanout", msg => {
+      document.getElementById("deaths").innerHTML =
+          players[msg.data.deadPlayerId].nickname + " died";
+        setTimeout(() => {
+          document.getElementById("deaths").innerHTML = "";
+        }, 2000);
       bulletThatShotSomeone = msg.data.bulletId;
       if (msg.data.deadPlayerId == myClientId) {
         amIDead = true;
         document.getElementById("score").innerHTML += " | P.S. YOU ARE DEAD!";
       }
-      
+
       //disable the dead players body and cause an explosion
       let deadPlayer = this.avatars[msg.data.deadPlayerId];
       deadPlayer.disableBody(true, true);
       let explosion = new Explosion(this, deadPlayer.x, deadPlayer.y);
     });
-  // ----- end of Ably channel subscriptions
-  }//end of create method
-   
+    // ----- end of Ably channel subscriptions
+  } //end of create method
+
   //method to create a bullet avatar when the server says so
   shootBullets(bullet) {
     let newBulletId = JSON.stringify(bullet.id);
@@ -339,8 +356,16 @@ class GameScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5);
 
     //add an overlap callback if the current player is still alive
-    if(this.avatars[myClientId]) {
-      if (this.physics.add.overlap(this.bullets[newBulletId].bulletSprite, this.avatars[myClientId], this.bomber, null, this)) {
+    if (this.avatars[myClientId]) {
+      if (
+        this.physics.add.overlap(
+          this.bullets[newBulletId].bulletSprite,
+          this.avatars[myClientId],
+          this.bomber,
+          null,
+          this
+        )
+      ) {
         bulletThatShotMe = newBulletId;
       }
     }
@@ -363,7 +388,10 @@ class GameScene extends Phaser.Scene {
     for (let item in players) {
       let avatarId = players[item].id;
       if (!this.avatars[avatarId] && avatarId != myClientId) {
-        let avatarName = "avatar" + players[avatarId].invaderAvatarType + players[avatarId].invaderAvatarColor;
+        let avatarName =
+          "avatar" +
+          players[avatarId].invaderAvatarType +
+          players[avatarId].invaderAvatarColor;
         this.avatars[avatarId] = this.physics.add
           .sprite(players[item].x, players[item].y, avatarName)
           .setOrigin(0.5, 0.5);
@@ -374,11 +402,30 @@ class GameScene extends Phaser.Scene {
   }
 
   update() {
-    //update the position of the ship as per server
-    if (this.shipBody) {
-      this.shipBody.x = currentShipPos;
+    if (hasGameStarted) {
+      //update the position of the ship as per server
+      if (this.shipBody) {
+        this.shipBody.x = currentShipPos;
+      }
+
+      //update the position of the bullets
+      let bulletsArr = this.bullets;
+      for (let item in bulletsArr) {
+        bulletsArr[item].bulletSprite.x = this.shipBody.x - 8;
+        bulletsArr[item].bulletSprite.y -= 20;
+        //destroy the bullet if it has crossed the top border
+        if (
+          bulletsArr[item].bulletSprite.y < 0 ||
+          !bulletsArr[item].bulletSprite
+        ) {
+          bulletsArr[item].bulletSprite.destroy();
+          let bulletToDelete = bulletsArr[item].id;
+          let bulletIdStr = JSON.stringify(bulletToDelete);
+          delete bulletsArr[bulletIdStr];
+        }
+      }
     }
-    
+
     //update the position of the avatars as per server
     for (let item in players) {
       let avatarId = players[item].id;
@@ -387,31 +434,21 @@ class GameScene extends Phaser.Scene {
         this.avatars[avatarId].y = players[item].y;
       }
     }
-    
-    //update the position of the bullets
-    let bulletsArr = this.bullets;
-    for (let item in bulletsArr) {
-      bulletsArr[item].bulletSprite.x = this.shipBody.x - 8;
-      bulletsArr[item].bulletSprite.y -= 20;
-      //destroy the bullet if it has crossed the top border
-      if (bulletsArr[item].bulletSprite.y < 0 || !bulletsArr[item].bulletSprite) {
-        bulletsArr[item].bulletSprite.destroy();
-        let bulletToDelete = bulletsArr[item].id;
-        let bulletIdStr = JSON.stringify(bulletToDelete);
-        delete bulletsArr[bulletIdStr];
-      }
-    }
+
     //call a method to check for user input
     this.publishPlayerInput();
   } //end of update method
 
   //method to check if the user is pressing the arrow keys and publish that info to the server
   publishPlayerInput() {
-    if (Phaser.Input.Keyboard.JustDown(this.cursorKeys.left) && !isGameOver) {
+    if (Phaser.Input.Keyboard.JustDown(this.cursorKeys.left) && !amIDead) {
       myChannel.publish("pos", {
         keyPressed: "left"
       });
-    } else if (Phaser.Input.Keyboard.JustDown(this.cursorKeys.right) && !isGameOver) {
+    } else if (
+      Phaser.Input.Keyboard.JustDown(this.cursorKeys.right) &&
+      !amIDead
+    ) {
       myChannel.publish("pos", {
         keyPressed: "right"
       });
@@ -424,6 +461,7 @@ const config = {
   width: 1400,
   height: 750,
   backgroundColor: "#FFFFF",
+  canvasStyle: "border:1px solid #ffffff;",
   parent: "gameContainer",
   scene: [GameScene],
   physics: {
@@ -435,3 +473,22 @@ const config = {
 };
 
 let game = new Phaser.Game(config);
+
+/*
+TODOS
+- WAIT FOR A FIXED NUMBER OF PEOPLE BEFORE STARTING THE GAME OR HAVE A CONTROL FROM SERVER SIDE TO START THE GAME [DONE]
+- SHOW MY AVATAR WHITE [DONE]
+- RESOLVE STICKY AVATAR ISSUE [NOT REPRODUCED]
+- REMOVE THE SERVER TIMEOUT [DONE]
+- MAKE AVATARS IMMUNE FOR 2 SECONDS
+- BUMP LIMITS TO HOUSE 15 PEOPLE
+- CHANGE SERVER LIMIT TO 15 PEOPLE
+- SHOW DEAD NOTIF FLASH [DONE]
+*/
+
+/*
+BUGS
+- FIX SOME AVATARS NOT MOVING DOWN [DONE]
+- FIX CHANNEL COUNT ADDING UP
+- FIX LEADERBOARD IN NOBODY WON SCENARIO
+*/

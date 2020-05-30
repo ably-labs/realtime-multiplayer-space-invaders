@@ -1,24 +1,24 @@
 dependencies:
-  ably: 1.1.24
+  ably: 1.1.25
   express: 4.17.1
   p2: 0.7.1
 packages:
-  /@ably/msgpack-js/0.3.2-v5:
+  /@ably/msgpack-js/0.3.3:
     dependencies:
       bops: 0.0.7
     dev: false
     resolution:
-      integrity: sha512-vsr8ZOiwim1k+6hV6f2ayd4PI4QtsInGeO6VmElGojG5PtYVG0biagd09ldyaaLp+nlVR8qziNPXTFWWnET+2g==
-  /ably/1.1.24:
+      integrity: sha512-H7oWg97VyA1JhWUP7YN7zwp9W1ozCqMSsqCcXNz4XLmZNdJKT2ntF/6DPgbviFgUpShjQlbPC/iamisTjwLHdQ==
+  /ably/1.1.25:
     dependencies:
-      '@ably/msgpack-js': 0.3.2-v5
+      '@ably/msgpack-js': 0.3.3
       request: 2.88.2
       ws: 5.2.2
     dev: false
     engines:
       node: '>=4.5.x'
     resolution:
-      integrity: sha512-W+m4hLdOAJHhiYAkz0LOsZpe1mcRm7Phkh3CGzvL22/+rzsS8K+cBLtjxDUq+9HMpHVjKa6JkgLSOUeRl1pFkw==
+      integrity: sha512-VGbV2Bsd0Glt0LwwzI39xZ4e9RdFZrFSOS3sKi/8+2ljb8LAujFG5Z6dJaOHPBjUohqj+Gtbv6rNQDrz4b7Ygw==
   /accepts/1.3.7:
     dependencies:
       mime-types: 2.1.25
@@ -65,10 +65,10 @@ packages:
     dev: false
     resolution:
       integrity: sha1-tG6JCTSpWR8tL2+G1+ap8bP+dqg=
-  /aws4/1.9.1:
+  /aws4/1.10.0:
     dev: false
     resolution:
-      integrity: sha512-wMHVg2EOHaMRxbzgFJ9gtjOOCrI80OHLG14rxi28XwOW8ux6IiEbRCGGGqCtdAIg4FQCbW20k9RsT4y3gJlFug==
+      integrity: sha512-3YDiu347mtVtjpyV3u5kVqQLP242c06zwDOgpeRnybmXlYYsLbtTrUBUm8i8srONt+FWobl5aibnU1030PeeuA==
   /base64-js/0.0.2:
     dev: false
     engines:
@@ -574,7 +574,7 @@ packages:
   /request/2.88.2:
     dependencies:
       aws-sign2: 0.7.0
-      aws4: 1.9.1
+      aws4: 1.10.0
       caseless: 0.12.0
       combined-stream: 1.0.8
       extend: 3.0.2
@@ -756,6 +756,6 @@ registry: 'https://registry.npmjs.org/'
 shrinkwrapMinorVersion: 9
 shrinkwrapVersion: 3
 specifiers:
-  ably: ^1.1.24
+  ably: ^1.1.25
   express: ^4.17.1
   p2: ^0.7.1
