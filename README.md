@@ -6,9 +6,9 @@ This app runs a realtime game allowing multiplayer mode on the classic retro gam
 
 ## Services/ libraries used in the game
 
-- Phaser 3
-- Ably Realtime
-- p2 NPM library
-- Glitch
+- [Phaser 3](https://phaser.io)
+- [Ably Realtime](https://www.ably.io)
+- [p2 NPM library](https://www.npmjs.com/package/p2)
+- [Glitch](https://glitch.com/)
 
 More specifics to come...
