@@ -2,32 +2,35 @@ const express = require("express");
 const Ably = require("ably");
 const p2 = require("p2");
 const app = express();
-
 let peopleAccessingTheWebsite = 0;
 
 const realtime = Ably.Realtime({
   key: process.env.ABLY_API_KEY,
   echoMessages: false
 });
-
+console.log('hi')
 //create a uniqueId to assign to clients on auth
 const uniqueId = function() {
-  return ( "id-" + Math.random().toString(36).substr(2, 16));
+  return (
+    "id-" +
+    Math.random()
+      .toString(36)
+      .substr(2, 16)
+  );
 };
 
 app.use(express.static("public"));
 
 app.get("/", (request, response) => {
-  if(peopleAccessingTheWebsite >= 20){
-    console.log(peopleAccessingTheWebsite)
-    response.sendFile(__dirname + "/views/gameRoomFull.html");
-  }else{
-    peopleAccessingTheWebsite ++;
-    console.log(peopleAccessingTheWebsite)
+   if (peopleAccessingTheWebsite >= 15) {
+     console.log(peopleAccessingTheWebsite);
+     response.sendFile(__dirname + "/views/gameRoomFull.html");
+   } else {
+    peopleAccessingTheWebsite++;
+    console.log(peopleAccessingTheWebsite);
     response.sendFile(__dirname + "/views/intro.html");
     //response.sendFile(__dirname + "/views/gameRoomFull.html");
   }
-  
 });
 
 app.get("/gameplay", (request, response) => {
@@ -73,6 +76,8 @@ let shipX = Math.floor((Math.random() * 1370 + 30) * 1000) / 1000;
 let shipY = 20;
 let avatarColors = ["green", "cyan", "yellow"];
 let avatarTypes = ["A", "B", "C"];
+let startGameOrNo = false;
+let alivePlayers = 0;
 
 function randomAvatarSelector() {
   return Math.floor(Math.random() * 3);
@@ -89,7 +94,7 @@ let world = new p2.World({
 
 world.addBody(shipBody);
 
-let players = {}
+let players = {};
 /* sample structure of the players array
 "id-xyz123": {
   id: "",
@@ -117,32 +122,27 @@ let gameDuration = 0;
 let gameRoom = realtime.channels.get("game-room");
 let deadPlayerCh = realtime.channels.get("dead-player");
 
-
 //subscribe to players entering
 gameRoom.presence.subscribe("enter", player => {
-  playerChannels[player.clientId] = realtime.channels.get("clientChannel-" + player.clientId);
+  alivePlayers++;
+  playerChannels[player.clientId] = realtime.channels.get(
+    "clientChannel-" + player.clientId
+  );
   //subscribe to the x position of this player
   playerChannels[player.clientId].subscribe("pos", msg => {
     handlePlayerInput(msg.data, player.clientId);
   });
-  
+
   //reset the arrays adn start the game ticker and ship movement when the first player joins
   //this needs revisiting for when all players have died
   if (++playerCount === 1) {
-    console.log(`player is ${playerCount}`)
-    setTimeout(() => {
-      console.log('timeout')
-      gameRoom.publish("game-over", {
-        winner: "timeout"
-      })
-    }, 120000)
+    console.log(`player is ${playerCount}`);
     players = {};
     //bulletObj = {};
-    startShip();
     startGameDataTicker();
   }
-  
-  console.log(`new player is ${playerCount}`)
+
+  console.log(`new player is ${playerCount}`);
 
   //create a new entry for the player who just entered the game
   let playerData = {
@@ -154,17 +154,26 @@ gameRoom.presence.subscribe("enter", player => {
     score: 0,
     nickname: player.data
   };
-  
+
   //add new player to the array
   players[player.clientId] = playerData;
-  
+
+  if (playerCount >= 0) {
+    startGameOrNo = true;
+    startShipVelocityUpdates();
+    for (let player in players) {
+      console.log(`mvement for ${players[player].id}`);
+      startDownwardMovement(players[player].id);
+    }
+  }
+
   //revisit why the timeout is required
-  setTimeout(() => {
-    gameRoom.publish("player-join", playerData);
-  }, 1000);
+  //setTimeout(() => {
+  gameRoom.publish("player-join", playerData);
+  //}, 1000);
 
   //start moving the y position of existing players
-  startDownwardMovement(player.clientId);
+  //startDownwardMovement(player.clientId);
 }); //end of enter subscribe
 
 //method to update the x position of the player per message from the client
@@ -186,12 +195,19 @@ function handlePlayerInput(data, playerId) {
 
 //subscribe to players leaving
 gameRoom.presence.subscribe("leave", player => {
+  alivePlayers--;
   gameRoom.publish("player-leave", {
     id: player.clientId
   });
+  playerChannels[player.clientId].unsubscribe();
+  playerChannels[player.clientId].detach();
   delete playerChannels[player.clientId];
   playerCount--;
-  peopleAccessingTheWebsite --;
+  if (playerCount <= 0) {
+    alivePlayers = 0;
+    startGameOrNo = false;
+  }
+  peopleAccessingTheWebsite--;
   //console.log(peopleAccessingTheWebsite)
 }); //end of leave subscribe
 
@@ -201,9 +217,14 @@ function startDownwardMovement(playerId) {
     if (players[playerId] != undefined && playerCount != 0) {
       players[playerId].y += 20;
       players[playerId].score += 5;
-      
+
       // if the player has reached the bottom end, publish game over
       if (players[playerId].y > 720) {
+        for(let plCh in playerChannels){
+            console.log(playerChannels[plCh])
+            playerChannels[plCh].unsubscribe();
+            playerChannels[plCh].detach();
+        }
         gameRoom.publish("game-over", {
           winner: players[playerId].id
         });
@@ -222,8 +243,8 @@ function startGameDataTicker() {
       clearInterval(gameDataTick);
     }
     bulletOrNo = "";
-    bulletTimerCount += 60;
-    
+    bulletTimerCount += 90;
+
     //publish a bullet every half second
     if (bulletTimerCount > 500) {
       bulletTimerCount = 0;
@@ -232,21 +253,22 @@ function startGameDataTicker() {
         id: "bulletId-" + Math.floor((Math.random() * 2000 + 50) * 1000) / 1000
       };
     }
-    
+
     //publish the current game state to all the clients
     gameRoom.publish("game-state", {
       players: players,
       playerCount: playerCount,
-      //bullets: bullets,
       shipBody: shipBody.position,
-      bullet: bulletOrNo
+      bullet: bulletOrNo,
+      startGame: startGameOrNo
     });
   }, 100);
 }
 
 //subscribe to players death notification
 deadPlayerCh.subscribe("dead-notif", msg => {
-  
+  alivePlayers--;
+  console.log(`alivePlayers ${alivePlayers}`)
   //publish this info to all the clients
   deadPlayerCh.publish("dead-notif-fanout", {
     bulletId: msg.data.bulletId,
@@ -254,17 +276,27 @@ deadPlayerCh.subscribe("dead-notif", msg => {
   });
   // revisit delete on death here as it's needed for leaderboard
   delete players[msg.data.deadPlayerId];
+
+  setTimeout(() => {
+    if (alivePlayers == 0) {
+        for(let plCh in playerChannels){
+          console.log(playerChannels[plCh])
+          playerChannels[plCh].unsubscribe();
+        }
+      gameRoom.publish("game-over", {
+        winner: "alldead"
+      });
+    }
+  }, 1000);
 });
 
 //start the ship movement when at least one player is playing
-function startShip() {
+function startShipVelocityUpdates() {
   //update ship velocity and direction randomly every 5 seconds
   let interval = setInterval(() => {
     shipBody.velocity[0] = calcRandomVelocity();
   }, 5000);
 }
-
-
 
 //--game physics--//
 
@@ -281,7 +313,7 @@ setInterval(function() {
   } else if (shipBody.position[0] < 0 && shipBody.velocity[0] < 0) {
     shipBody.position[0] = 1400;
   }
-}, 1000 * timeStep); 
+}, 1000 * timeStep);
 
 // method to return random velocity
 function calcRandomVelocity() {
@@ -289,12 +321,3 @@ function calcRandomVelocity() {
   randomShipXVelocity *= Math.floor(Math.random() * 2) == 1 ? 1 : -1;
   return randomShipXVelocity;
 }
-
-
-/* TODOS
-- fix avatars getting struck
-- debug why explosion doesn't happen when window is not in focus
-- player got killed test
-- fix start lag
-- look for an option to start the game after everyone joins
-*/
