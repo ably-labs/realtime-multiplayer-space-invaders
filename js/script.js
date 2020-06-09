@@ -12,7 +12,7 @@ let bulletOutOfBounds = "";
 let amIalive = false;
 let game;
 
-const BASE_SERVER_URL = "http://localhost:5000";
+const BASE_SERVER_URL = "https://multiplayer-space-invaders.herokuapp.com/";
 const myNickname = localStorage.getItem("nickname");
 
 const realtime = Ably.Realtime({
