@@ -8,9 +8,9 @@ document.getElementById("winner-announcement").innerHTML =
 
 if (firstRunnerUp) {
   document.getElementById("first-runnerup").innerHTML =
-    firstRunnerUp + " got the highest score!";
+    firstRunnerUp + " got the highest score";
 }
 if (secondRunnerUp) {
   document.getElementById("second-runnerup").innerHTML =
-    secondRunnerUp + " got the next highest score!";
+    secondRunnerUp + " got the next highest score";
 }
