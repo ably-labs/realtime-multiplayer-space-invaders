@@ -2,13 +2,6 @@
   box-sizing: border-box;
 }
 
-h1 {
-  font-style: italic;
-  color: #373fff;
-  max-width: calc(100% - 5rem);
-  line-height: 1.1;
-}
-
 form {
   background-color: #eee;
   display: grid;
@@ -41,15 +34,9 @@ form button:hover {
   background-color: lavender;
 }
 
-footer {
-  margin-top: 3em;
-  padding-top: 1.5em;
-  border-top: 1px solid lightgrey;
-}
-
 .intro-body {
   background-color: black;
-  color: #FFF;
+  color: #fff;
   font-family: "VT323";
   font-size: 22px;
   text-align: center;
@@ -58,7 +45,7 @@ footer {
 
 .room-full-body {
   background-color: black;
-  color: #FFF;
+  color: #fff;
   font-family: "VT323";
   font-size: 52px;
   text-align: center;
@@ -67,7 +54,7 @@ footer {
 
 .index-body {
   background-color: black;
-  color: #FFF;
+  color: #fff;
   font-family: "VT323";
   font-size: 22px;
 }
@@ -87,8 +74,6 @@ footer {
 
 .game-div {
   text-align: center;
-/*   border-style: solid;
-  border-color: #FFF; */
 }
 
 .game-headline-left {
@@ -101,7 +86,7 @@ footer {
 
 .winner-body {
   background-color: black;
-  color: #FFF;
+  color: #fff;
   font-family: "VT323";
   font-size: 62px;
   text-align: center;
