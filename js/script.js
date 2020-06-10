@@ -12,7 +12,7 @@ let bulletOutOfBounds = "";
 let amIalive = false;
 let game;
 
-const BASE_SERVER_URL = "https://multiplayer-space-invaders.herokuapp.com";
+const BASE_SERVER_URL = "http://localhost:5000";
 const myNickname = localStorage.getItem("nickname");
 
 const realtime = Ably.Realtime({
@@ -199,6 +199,9 @@ class GameScene extends Phaser.Scene {
       localStorage.setItem("winner", msg.data.winner);
       localStorage.setItem("firstRunnerUp", msg.data.firstRunnerUp);
       localStorage.setItem("secondRunnerUp", msg.data.secondRunnerUp);
+      gameRoom.detach();
+      deadPlayerCh.detach();
+      myChannel.detach();
       if (msg.data.winner == "Nobody") {
         window.location.replace(BASE_SERVER_URL + "/gameover");
       } else {

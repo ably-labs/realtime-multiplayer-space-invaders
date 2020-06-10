@@ -101,7 +101,6 @@ realtime.connection.once("connected", () => {
 
   gameRoom.presence.subscribe("enter", (player) => {
     let newPlayerId;
-    let newPlayerData;
     alivePlayers++;
     totalPlayers++;
 
@@ -284,8 +283,8 @@ function resetServerState() {
   gameTickerOn = false;
   totalPlayers = 0;
   alivePlayers = 0;
-  for (let channelInstance in playerChannels) {
-    //channelInstance.unsubscribe();
+  for (let item in playerChannels) {
+    playerChannels[item].detach();
   }
 }
 
@@ -319,8 +318,3 @@ function calcRandomVelocity() {
   randomShipXVelocity *= Math.floor(Math.random() * 2) == 1 ? 1 : -1;
   return randomShipXVelocity;
 }
-
-//
-/*
-- get random numbers via function
-*/
