@@ -15,10 +15,12 @@ let game;
 const BASE_SERVER_URL = "http://localhost:5000";
 const myNickname = localStorage.getItem("nickname");
 
+// connect to Ably
 const realtime = Ably.Realtime({
   authUrl: BASE_SERVER_URL + "/auth",
 });
 
+// once connected to Ably, instantiate channels and launch the game
 realtime.connection.once("connected", () => {
   myClientId = realtime.auth.clientId;
   gameRoom = realtime.channels.get("game-room");
@@ -28,6 +30,7 @@ realtime.connection.once("connected", () => {
   game = new Phaser.Game(config);
 });
 
+// primary game scene
 class GameScene extends Phaser.Scene {
   constructor() {
     super("gameScene");
@@ -162,6 +165,7 @@ class GameScene extends Phaser.Scene {
     this.ship = {};
     this.cursorKeys = this.input.keyboard.createCursorKeys();
 
+    // explode animation to play when a bullet hits an avatar
     this.anims.create({
       key: "explode",
       frames: this.anims.generateFrameNumbers("explosion"),
@@ -170,6 +174,7 @@ class GameScene extends Phaser.Scene {
       hideOnComplete: true,
     });
 
+    // subscribe to the game tick
     gameRoom.subscribe("game-state", (msg) => {
       if (msg.data.gameOn) {
         gameOn = true;
@@ -193,6 +198,7 @@ class GameScene extends Phaser.Scene {
       totalPlayers = msg.data.playerCount;
     });
 
+    // subscribe to the game over event and switch to a new page
     gameRoom.subscribe("game-over", (msg) => {
       gameOn = false;
       localStorage.setItem("totalPlayers", msg.data.totalPlayers);
@@ -212,6 +218,7 @@ class GameScene extends Phaser.Scene {
 
   update() {
     if (gameOn) {
+      // create and update the position of the ship
       if (this.ship.x) {
         this.ship.x = latestShipPosition;
       } else {
@@ -220,6 +227,8 @@ class GameScene extends Phaser.Scene {
           .setOrigin(0.5, 0.5);
         this.ship.x = latestShipPosition;
       }
+
+      // create and update the position of the bullets
       for (let item in this.visibleBullets) {
         if (this.visibleBullets[item].toLaunch) {
           this.visibleBullets[item].toLaunch = false;
@@ -237,6 +246,7 @@ class GameScene extends Phaser.Scene {
       }
     }
 
+    // remove avatars of players that have left the game
     for (let item in this.avatars) {
       if (!players[item]) {
         this.avatars[item].destroy();
@@ -244,6 +254,7 @@ class GameScene extends Phaser.Scene {
       }
     }
 
+    // create and update avatars and scores of all the players
     for (let item in players) {
       let avatarId = players[item].id;
       if (this.avatars[avatarId] && players[item].isAlive) {
@@ -280,9 +291,12 @@ class GameScene extends Phaser.Scene {
         this.explodeAndKill(avatarId);
       }
     }
+
+    // check for user input
     this.publishMyInput();
   }
 
+  // play the explosion animation and destroy the avatar
   explodeAndKill(deadPlayerId) {
     this.avatars[deadPlayerId].disableBody(true, true);
     let explosion = new Explosion(
@@ -298,6 +312,7 @@ class GameScene extends Phaser.Scene {
     }, 2000);
   }
 
+  // publish user input to the game server
   publishMyInput() {
     if (Phaser.Input.Keyboard.JustDown(this.cursorKeys.left) && amIalive) {
       myChannel.publish("pos", {
@@ -313,13 +328,14 @@ class GameScene extends Phaser.Scene {
     }
   }
 
+  // create a new bullet sprite
   createBullet(bulletObject) {
     let bulletId = bulletObject.id;
     this.visibleBullets[bulletId].bulletSprite = this.physics.add
       .sprite(this.ship.x - 8, bulletObject.y, "bullet")
       .setOrigin(0.5, 0.5);
 
-    //add an overlap callback if the current player is still alive
+    // add an overlap callback if the current player is still alive
     if (amIalive) {
       if (
         this.physics.add.overlap(
@@ -335,6 +351,7 @@ class GameScene extends Phaser.Scene {
     }
   }
 
+  // publish an eventto the server if the current player is hit
   publishMyDeathNews(bullet, avatar) {
     if (amIalive) {
       deadPlayerCh.publish("dead-notif", {

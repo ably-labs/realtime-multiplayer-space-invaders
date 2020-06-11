@@ -38,12 +38,13 @@ let copyOfShipBody = {
   velocity: "",
 };
 
+// instantiate to Ably
 const realtime = Ably.Realtime({
   key: ABLY_API_KEY,
   echoMessages: false,
 });
 
-//create a uniqueId to assign to clients on auth
+// create a uniqueId to assign to clients on auth
 const uniqueId = function () {
   return "id-" + totalPlayers + Math.random().toString(36).substr(2, 16);
 };
@@ -93,12 +94,14 @@ const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
 
-//game server
+// start game server logic
 
+// wait until connection with Ably is established
 realtime.connection.once("connected", () => {
   gameRoom = realtime.channels.get("game-room");
   deadPlayerCh = realtime.channels.get("dead-player");
 
+  // subscribe to new players entering the game
   gameRoom.presence.subscribe("enter", (player) => {
     let newPlayerId;
     alivePlayers++;
@@ -131,6 +134,8 @@ realtime.connection.once("connected", () => {
     subscribeToPlayerInput(playerChannels[newPlayerId], newPlayerId);
   });
 
+  // subscribe to players leaving the game
+
   gameRoom.presence.subscribe("leave", (player) => {
     let leavingPlayer = player.clientId;
     alivePlayers--;
@@ -140,6 +145,8 @@ realtime.connection.once("connected", () => {
       resetServerState();
     }
   });
+
+  // subscribe to players being shot
 
   deadPlayerCh.subscribe("dead-notif", (msg) => {
     players[msg.data.deadPlayerId].isAlive = false;
@@ -153,6 +160,7 @@ realtime.connection.once("connected", () => {
   });
 });
 
+// start the ship and bullets
 function startShipAndBullets() {
   gameOn = true;
 
@@ -171,6 +179,7 @@ function startShipAndBullets() {
   }
 }
 
+// start the game tick
 function startGameDataTicker() {
   let tickInterval = setInterval(() => {
     if (!gameTickerOn) {
@@ -189,6 +198,8 @@ function startGameDataTicker() {
       if (shipBody) {
         copyOfShipBody = shipBody;
       }
+
+      // fan out the latest game state
       gameRoom.publish("game-state", {
         players: players,
         playerCount: totalPlayers,
@@ -201,6 +212,7 @@ function startGameDataTicker() {
   }, GAME_TICKER_MS);
 }
 
+// subscribe to each player's input events
 function subscribeToPlayerInput(channelInstance, playerId) {
   channelInstance.subscribe("pos", (msg) => {
     if (msg.data.keyPressed == "left") {
@@ -219,6 +231,7 @@ function subscribeToPlayerInput(channelInstance, playerId) {
   });
 }
 
+// update the y position of each player when the game starts
 function startDownwardMovement(playerId) {
   let interval = setInterval(() => {
     if (players[playerId] && players[playerId].isAlive) {
@@ -235,6 +248,7 @@ function startDownwardMovement(playerId) {
   }, PLAYER_VERTICAL_MOVEMENT_UPDATE_INTERVAL);
 }
 
+// finish the game
 function finishGame(playerId) {
   let firstRunnerUpName = "";
   let secondRunnerUpName = "";
@@ -267,6 +281,7 @@ function finishGame(playerId) {
     }
   }
 
+  // fan out leaderboard info when the game has finished
   gameRoom.publish("game-over", {
     winner: winnerName,
     firstRunnerUp: firstRunnerUpName,
@@ -277,6 +292,7 @@ function finishGame(playerId) {
   resetServerState();
 }
 
+// reset all variables in the server
 function resetServerState() {
   peopleAccessingTheWebsite = 0;
   gameOn = false;
@@ -288,10 +304,12 @@ function resetServerState() {
   }
 }
 
+// random avatar type and colour selection
 function randomAvatarSelector() {
   return Math.floor(Math.random() * 3);
 }
 
+// start the server-side physics world
 function startMovingPhysicsWorld() {
   let p2WorldInterval = setInterval(function () {
     if (!gameOn) {
@@ -312,7 +330,7 @@ function startMovingPhysicsWorld() {
   }, 1000 * P2_WORLD_TIME_STEP);
 }
 
-// method to return random velocity
+// calculate a random horizontal velocity for the ship
 function calcRandomVelocity() {
   let randomShipXVelocity = Math.floor(Math.random() * 200) + 20;
   randomShipXVelocity *= Math.floor(Math.random() * 2) == 1 ? 1 : -1;
