@@ -17,18 +17,43 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.23.0/dist/phaser.min.js"></script>
     <script
       lang="text/javascript"
       src="https://cdn.ably.io/lib/ably.min-1.js"
     ></script>
-    <script src="/nickname.js"></script>
+    <script src="/intro.js"></script>
     <script src="/explosion.js"></script>
     <script src="/script.js" defer></script>
   </head>
   <body class="index-body">
-    <div>
+    <!--modal section start-->
+    <div class="bg-modal">
+      <div class="modal-content">
+        <div class="close">x</div>
+        <img
+          src="https://user-images.githubusercontent.com/5900152/84948428-a3c6c900-b0e3-11ea-9ef5-0b1050cd8daf.png"
+          alt="copy"
+          width="60px"
+          height="60px"
+        />
+        <label id="game-link"></label>
+        <button
+          onclick="copyGameCode()"
+          id="copy-button"
+          type="button"
+          class="button"
+        >
+          Copy game link
+        </button>
+      </div>
+    </div>
+    <!--modal section end-->
+    <div class="game-area" id="game-area">
       <div style="float: left;"><span id="score">Score: 0</span></div>
+      <div style="float: left;">
+        <span id="room-code">&nbsp; &nbsp; Game room 0</span>
+      </div>
       <div style="float: right;"><span id="join-leave-updates"></span></div>
       <div style="float: right;"><span id="deaths"></span></div>
     </div>

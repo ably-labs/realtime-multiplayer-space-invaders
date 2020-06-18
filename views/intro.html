@@ -41,26 +41,50 @@
     <div class="input-group nickname-input">
       <input
         type="text"
-        class="form-control"
+        class="input-border text-center form-control"
         placeholder="Enter your nickname"
         aria-label="Enter your nickname"
         aria-describedby="basic-addon2"
         id="nickname"
       />
+    </div>
+    <div class="input-group room-input">
+      <div class="input-group-prepend">
+        <button
+          class="input-border input-group-text"
+          id="go-span"
+          onclick="hostNewGame()"
+          >LAUNCH A NEW ROOM</span
+        >
+      </div>
+      <div class="input-group-prepend">
+        <p class="input-group-text text-group">or</p>
+      </div>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Enter the room code"
+        aria-label="Enter the room code"
+        aria-describedby="basic-addon2"
+        id="room-code"
+      />
       <div class="input-group-append">
-        <a href="gameplay">
-          <span class="input-group-text" id="go-span" onclick="setNickname()"
-            >GO
-          </span>
-        </a>
+        <button
+          class="input-border input-group-text"
+          id="go-span"
+          onclick="joinRoom()"
+          >JOIN ROOM
+      </button>
       </div>
     </div>
+
     <img
       alt="Invader avatars"
       width="60%"
       height="300"
       src="https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Fallinvaders.png?v=1589884216800"
+      class="img-fluid"
     />
-    <script src="/nickname.js"></script>
+    <script src="/intro.js"></script>
   </body>
 </html>
