@@ -15,7 +15,7 @@ let amIalive = false;
 let game;
 let myGameRoomName;
 let myGameRoomCh;
-const BASE_SERVER_URL = "http://localhost:5000";
+const BASE_SERVER_URL = "https://space-invaders-multiplayer.herokuapp.com";
 
 const myNickname = localStorage.getItem("nickname");
 const myGameRoomCode = localStorage.getItem("roomCode");
