@@ -51,16 +51,6 @@ function copyGameCode() {
 // once connected to Ably, instantiate channels and launch the game
 realtime.connection.once("connected", () => {
   myClientId = realtime.auth.clientId;
-  if (amIHost == "true") {
-    const globalGameName = "main-game-thread";
-    globalChannel = realtime.channels.get(globalGameName);
-    globalChannel.presence.enter({
-      nickname: myNickname,
-      roomCode: myGameRoomCode,
-      isHost: amIHost,
-    });
-  }
-
   myGameRoomName = myGameRoomCode + ":primary";
   deadPlayerChName = myGameRoomCode + ":dead-player";
   myChannelName = myGameRoomCode + ":clientChannel-" + myClientId;
@@ -68,7 +58,21 @@ realtime.connection.once("connected", () => {
   deadPlayerCh = realtime.channels.get(deadPlayerChName);
   myChannel = realtime.channels.get(myChannelName);
 
-  if (amIHost != "true") {
+  if (amIHost == "true") {
+    const globalGameName = "main-game-thread";
+    globalChannel = realtime.channels.get(globalGameName);
+    myGameRoomCh.subscribe("thread-ready", (msg) => {
+      myGameRoomCh.presence.enter({
+        nickname: myNickname,
+        isHost: amIHost,
+      });
+    });
+    globalChannel.presence.enter({
+      nickname: myNickname,
+      roomCode: myGameRoomCode,
+      isHost: amIHost,
+    });
+  } else if (amIHost != "true") {
     myGameRoomCh.presence.enter({
       nickname: myNickname,
       isHost: amIHost,

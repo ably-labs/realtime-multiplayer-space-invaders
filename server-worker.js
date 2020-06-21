@@ -68,29 +68,28 @@ realtime.connection.once("connected", () => {
   deadPlayerCh = realtime.channels.get(deadPlayerChName);
 
   //add and subscribe to the host
-  alivePlayers++;
-  totalPlayers++;
-  gameTickerOn = true;
-  playerChannels[hostClientId] = realtime.channels.get(
-    workerData.hostRoomCode + ":clientChannel-" + hostClientId
-  );
-  hostPlayerObject = {
-    id: hostClientId,
-    invaderAvatarType: avatarTypes[between(0, 3)],
-    invaderAvatarColor: avatarColors[colorIndex],
-    x: playerXposition(colorIndex),
-    y: 20,
-    score: 0,
-    nickname: hostNickname,
-    isAlive: true,
-  };
-  players[hostClientId] = hostPlayerObject;
-  subscribeToPlayerInput(playerChannels[hostClientId], hostClientId);
-
-  startGameDataTicker();
+  // alivePlayers++;
+  // totalPlayers++;
+  // gameTickerOn = true;
+  // playerChannels[hostClientId] = realtime.channels.get(
+  //   workerData.hostRoomCode + ":clientChannel-" + hostClientId
+  // );
+  // hostPlayerObject = {
+  //   id: hostClientId,
+  //   invaderAvatarType: avatarTypes[between(0, 3)],
+  //   invaderAvatarColor: avatarColors[colorIndex],
+  //   x: playerXposition(colorIndex),
+  //   y: 20,
+  //   score: 0,
+  //   nickname: hostNickname,
+  //   isAlive: true,
+  // };
+  // players[hostClientId] = hostPlayerObject;
+  // subscribeToPlayerInput(playerChannels[hostClientId], hostClientId);
 
   // subscribe to new players entering the game
   gameRoom.presence.subscribe("enter", (player) => {
+    console.log("new player");
     let newPlayerId;
     alivePlayers++;
     totalPlayers++;
@@ -101,9 +100,12 @@ realtime.connection.once("connected", () => {
     if (++colorIndex == 6) {
       colorIndex = 0;
     }
+    if (totalPlayers == 1) {
+      gameTickerOn = true;
+      startGameDataTicker();
+    }
     newPlayerObject = {
       id: newPlayerId,
-      //x: Math.floor((Math.random() * 1370 + 30) * 1000) / 1000,
       invaderAvatarType: avatarTypes[between(0, 3)],
       invaderAvatarColor: avatarColors[colorIndex],
       x: playerXposition(colorIndex),
@@ -121,11 +123,9 @@ realtime.connection.once("connected", () => {
 
   // subscribe to players leaving the game
   gameRoom.presence.subscribe("leave", (player) => {
-    console.log(`left`);
     let leavingPlayer = player.clientId;
     alivePlayers--;
     totalPlayers--;
-    console.log(`${alivePlayers} ${totalPlayers}`);
     delete players[leavingPlayer];
     if (totalPlayers <= 0) {
       killWorkerThread();
@@ -142,6 +142,9 @@ realtime.connection.once("connected", () => {
         finishGame("");
       }, 1000);
     }
+  });
+  gameRoom.publish("thread-ready", {
+    start: true,
   });
 });
 
