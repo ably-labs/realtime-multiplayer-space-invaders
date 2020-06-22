@@ -1,39 +1,55 @@
+body {
+  margin: 0;
+  padding: 10px;
+}
+
 * {
   box-sizing: border-box;
 }
 
 input {
-  border: 1px solid silver;
   display: block;
-  font-size: 16px;
+  width: 100%;
   margin-bottom: 10px;
   padding: 5px;
-  width: 100%;
+  border: 1px solid silver;
+  font-size: 16px;
 }
 
 .intro-body {
-  background-color: black;
-  color: #fff;
   font-family: "VT323";
   font-size: 22px;
   text-align: center;
+  color: #fff;
+  background-color: black;
   background-image: url("https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2FScreenshot%202020-05-19%20at%2013.36.26.png?v=1589892011044");
 }
 
+.intro-img {
+  width: 60%;
+  max-width: 580px;
+}
+
 .room-full-body {
-  background-color: black;
-  color: #fff;
   font-family: "VT323";
   font-size: 52px;
   text-align: center;
+  color: #fff;
+  background-color: black;
   background-image: url("https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2FScreenshot%202020-05-19%20at%2013.36.26.png?v=1589892011044");
 }
 
 .index-body {
-  background-color: black;
-  color: #fff;
   font-family: "VT323";
   font-size: 22px;
+  color: #fff;
+  background-color: black;
+}
+
+.game-text {
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .game-instructions {
@@ -51,12 +67,11 @@ input {
 }
 
 .create-room {
-  text-align: center;
-  display: inline-block;
   width: 60%;
   margin: 0 auto;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding: 10px 0;
+  text-align: center;
+  display: inline-block;
 }
 
 .button-center {
@@ -70,12 +85,16 @@ input {
 .room-input {
   width: 50%;
   margin: 0 auto;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding: 10px 0;
 }
 
 .game-div {
   text-align: center;
+}
+
+.game-area {
+  display: flex;
+  justify-content: space-between;
 }
 
 .game-headline-left {
@@ -87,11 +106,11 @@ input {
 }
 
 .winner-body {
-  background-color: black;
-  color: #fff;
   font-family: "VT323";
   font-size: 62px;
   text-align: center;
+  color: #fff;
+  background-color: black;
   background-image: url("https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2FScreenshot%202020-05-19%20at%2013.36.26.png?v=1589892011044");
 }
 
@@ -100,6 +119,10 @@ input {
   margin: 0 auto;
   padding-top: 20px;
   font-size: 82px;
+}
+
+.winner-text {
+  text-transform: uppercase;
 }
 
 .runner-ups-div {
@@ -111,50 +134,50 @@ input {
 
 /* Modal section */
 .bg-modal {
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  display: none;
   position: absolute;
   top: 0;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 100%;
   color: #fff;
-  display: none;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .modal-content {
+  position: relative;
   width: 500px;
   height: 300px;
+  padding: 20px;
   border: 5px solid white;
   border-radius: 4px;
   text-align: center;
-  padding: 20px;
-  position: relative;
 }
 
 .button {
-  background-color: #000;
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 28px;
   border: 2px solid white;
   border-radius: 10px;
   text-decoration: none;
   font-size: 16px;
-  padding: 10px 28px;
-  color: white;
-  margin-top: 10px;
-  display: inline-block;
   font-family: "VT323";
+  color: white;
+  background-color: #000;
 }
 
 .button:hover {
-  background-color: white;
-  color: #000;
   border: 2px solid black;
+  color: #000;
+  background-color: white;
 }
 
 .button:active {
-  background-color: white;
-  color: #000;
   border: 2px solid black;
+  color: #000;
+  background-color: white;
 }
 
 label {
@@ -173,11 +196,24 @@ label {
 /* end module*/
 
 .text-group {
-  background-color: black;
   border: none;
   color: white;
+  background-color: black;
 }
 
 .input-border {
-  border-radius: 0%;
+  border-radius: 0;
+}
+
+.input-button {
+  text-transform: uppercase;
+  background-color: #f7f500;
+}
+
+.input-button:hover {
+  background-color: #3ff456;
+}
+
+.img-invaders {
+  width: 60%;
 }
