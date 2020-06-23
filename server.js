@@ -133,7 +133,6 @@ function generateNewGameThread(
       if (code !== 0) {
         console.log(`WORKER EXITED DUE TO AN ERROR WITH CODE ${code}`);
       }
-      console.log(`on exit ${JSON.stringify(activeGameRooms)}`);
     });
   }
 }
