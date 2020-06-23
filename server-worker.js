@@ -19,7 +19,7 @@ const PLAYER_VERTICAL_INCREMENT = 20;
 const PLAYER_VERTICAL_MOVEMENT_UPDATE_INTERVAL = 1000;
 const PLAYER_SCORE_INCREMENT = 5;
 const P2_WORLD_TIME_STEP = 1 / 16;
-const MIN_PLAYERS_TO_START_GAME = 2;
+const MIN_PLAYERS_TO_START_GAME = 6;
 const GAME_TICKER_MS = 100;
 
 let players = {};
@@ -40,6 +40,7 @@ let gameOn = false;
 let alivePlayers = 0;
 let totalPlayers = 0;
 let gameRoomName = workerData.hostRoomCode + ":primary";
+let roomCode = workerData.hostRoomCode;
 let deadPlayerChName = workerData.hostRoomCode + ":dead-player";
 let hostClientId = workerData.hostClientId;
 let hostNickname = workerData.hostNickname;
@@ -73,6 +74,11 @@ realtime.connection.once("connected", () => {
     let newPlayerId;
     alivePlayers++;
     totalPlayers++;
+    parentPort.postMessage({
+      roomName: roomCode,
+      totalPlayers: totalPlayers,
+      gameOn: gameOn,
+    });
     newPlayerId = player.clientId;
     playerChannels[newPlayerId] = realtime.channels.get(
       workerData.hostRoomCode + ":clientChannel-" + player.clientId
@@ -106,6 +112,10 @@ realtime.connection.once("connected", () => {
     let leavingPlayer = player.clientId;
     alivePlayers--;
     totalPlayers--;
+    parentPort.postMessage({
+      roomName: roomCode,
+      totalPlayers: totalPlayers,
+    });
     delete players[leavingPlayer];
     if (totalPlayers <= 0) {
       killWorkerThread();
@@ -261,6 +271,10 @@ function finishGame(playerId) {
 
 // reset all variables in the server
 function killWorkerThread() {
+  parentPort.postMessage({
+    resetEntry: true,
+    roomName: roomCode,
+  });
   for (let item in playerChannels) {
     playerChannels[item].detach();
   }

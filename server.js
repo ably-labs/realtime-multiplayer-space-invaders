@@ -13,12 +13,10 @@ const Ably = require("ably");
 const p2 = require("p2");
 const app = express();
 const ABLY_API_KEY = process.env.ABLY_API_KEY;
-
 const globalGameName = "main-game-thread";
-//let peopleAccessingTheWebsite = 0;
-const MIN_PLAYERS_TO_START_GAME = 3;
+const GAME_ROOM_CAPACITY = 6;
 let globalChannel;
-let activeGameRooms = [];
+let activeGameRooms = {};
 
 // instantiate to Ably
 const realtime = Ably.Realtime({
@@ -57,7 +55,22 @@ app.get("/", (request, response) => {
 });
 
 app.get("/gameplay", (request, response) => {
-  response.sendFile(__dirname + "/views/index.html");
+  let requestedRoom = request.query.roomCode;
+  let isReqHost = request.query.isHost == "true";
+  if (!isReqHost && activeGameRooms[requestedRoom]) {
+    if (
+      activeGameRooms[requestedRoom].totalPlayers + 1 <= GAME_ROOM_CAPACITY &&
+      !activeGameRooms[requestedRoom].gameOn
+    ) {
+      response.sendFile(__dirname + "/views/index.html");
+    } else {
+      response.sendFile(__dirname + "/views/gameRoomFull.html");
+    }
+  } else if (isReqHost) {
+    response.sendFile(__dirname + "/views/index.html");
+  } else {
+    response.sendFile(__dirname + "/views/gameRoomFull.html");
+  }
 });
 
 app.get("/winner", (request, response) => {
@@ -93,7 +106,6 @@ function generateNewGameThread(
   hostClientId
 ) {
   if (isHost && isMainThread) {
-    activeGameRooms.push(hostRoomCode);
     const worker = new Worker("./server-worker.js", {
       workerData: {
         hostNickname: hostNickname,
@@ -105,11 +117,23 @@ function generateNewGameThread(
     worker.on("error", (error) => {
       console.log(`WORKER EXITED DUE TO AN ERROR ${error}`);
     });
+    worker.on("message", (msg) => {
+      if (msg.roomName && !msg.resetEntry) {
+        activeGameRooms[msg.roomName] = {
+          roomName: msg.roomName,
+          totalPlayers: msg.totalPlayers,
+          gameOn: msg.gameOn,
+        };
+      } else if (msg.roomName && msg.resetEntry) {
+        delete activeGameRooms[msg.roomName];
+      }
+    });
     worker.on("exit", (code) => {
       console.log(`WORKER EXITED WITH THREAD ID ${threadId}`);
       if (code !== 0) {
         console.log(`WORKER EXITED DUE TO AN ERROR WITH CODE ${code}`);
       }
+      console.log(`on exit ${JSON.stringify(activeGameRooms)}`);
     });
   }
 }

@@ -1,18 +1,16 @@
-const BASE_SERVER = "https://space-invaders-multiplayer.herokuapp.com";
+//const BASE_SERVER = "https://space-invaders-multiplayer.herokuapp.com";
 let nickname = "";
 let nicknameInput = document.getElementById("nickname");
 let roomCode = "";
 
 function hostNewGame() {
-  console.log("hola");
-  console.log(BASE_SERVER);
   localStorage.clear();
   roomCode = getRandomRoomId();
   nickname = nicknameInput.value;
   localStorage.setItem("isHost", true);
   localStorage.setItem("nickname", nickname);
   localStorage.setItem("roomCode", roomCode);
-  window.location.replace(BASE_SERVER + "/gameplay");
+  window.location.replace("/gameplay?roomCode=" + roomCode + "&isHost=true");
 }
 
 function joinRoom() {
@@ -22,7 +20,7 @@ function joinRoom() {
   localStorage.setItem("isHost", false);
   localStorage.setItem("nickname", nickname);
   localStorage.setItem("roomCode", roomCode);
-  window.location.replace(BASE_SERVER + "/gameplay");
+  window.location.replace("/gameplay?roomCode=" + roomCode + "&isHost=false");
 }
 
 function getRandomRoomId() {

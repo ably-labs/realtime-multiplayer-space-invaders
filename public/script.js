@@ -15,7 +15,6 @@ let amIalive = false;
 let game;
 let myGameRoomName;
 let myGameRoomCh;
-const BASE_SERVER_URL = "https://space-invaders-multiplayer.herokuapp.com";
 
 const myNickname = localStorage.getItem("nickname");
 const myGameRoomCode = localStorage.getItem("roomCode");
@@ -26,7 +25,7 @@ document.getElementById("room-code").innerHTML =
 
 // connect to Ably
 const realtime = Ably.Realtime({
-  authUrl: BASE_SERVER_URL + "/auth",
+  authUrl: "/auth",
 });
 
 //show modal
@@ -351,9 +350,9 @@ class GameScene extends Phaser.Scene {
       deadPlayerCh.detach();
       myChannel.detach();
       if (msg.data.winner == "Nobody") {
-        window.location.replace(BASE_SERVER_URL + "/gameover");
+        window.location.replace("/gameover");
       } else {
-        window.location.replace(BASE_SERVER_URL + "/winner");
+        window.location.replace("/winner");
       }
     });
   }
