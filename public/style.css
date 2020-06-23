@@ -1,6 +1,7 @@
 body {
   margin: 0;
   padding: 10px;
+  overflow: hidden;
 }
 
 * {
@@ -207,13 +208,19 @@ label {
 
 .input-button {
   text-transform: uppercase;
-  background-color: #f7f500;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
 .input-button:hover {
-  background-color: #3ff456;
+  color: #fff;
+  background-color: #6c757d;
+  border-color: #6c757d;
 }
 
 .img-invaders {
   width: 60%;
+}
+
+#gameContainer {
+  height: calc(100vh - 42px);
 }
