@@ -1,4 +1,3 @@
-//const BASE_SERVER = "https://space-invaders-multiplayer.herokuapp.com";
 let nickname = "";
 let nicknameInput = document.getElementById("nickname");
 let roomCode = "";
