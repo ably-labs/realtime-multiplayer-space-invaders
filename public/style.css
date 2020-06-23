@@ -83,13 +83,10 @@ input {
 }
 
 .room-input {
-  width: 50%;
+  flex-wrap: nowrap;
+  width: 60%;
   margin: 0 auto;
   padding: 10px 0;
-}
-
-.game-div {
-  text-align: center;
 }
 
 .game-area {
