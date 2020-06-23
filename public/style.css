@@ -8,11 +8,13 @@ body {
 }
 
 input {
+  height: 40px;
   display: block;
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 5px;
-  border: 1px solid silver;
+  margin: 0;
+  padding: 5px 10px;
+  border: 0;
+  border-right: 1px solid silver;
+  border-radius: 0;
   font-size: 16px;
 }
 
@@ -58,14 +60,6 @@ input {
   padding-top: 20px;
 }
 
-.nickname-input {
-  width: 30%;
-  margin: 0 auto;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  text-align: center;
-}
-
 .create-room {
   width: 60%;
   margin: 0 auto;
@@ -83,10 +77,19 @@ input {
 }
 
 .room-input {
-  flex-wrap: nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 60%;
   margin: 0 auto;
   padding: 10px 0;
+}
+
+.nickname {
+  width: 30%;
+  min-width: 300px;
+  margin: 30px auto 10px;
+  text-align: center;
 }
 
 .game-area {
@@ -105,6 +108,11 @@ input {
 #deaths {
   margin-left: auto;
   text-align: right;
+}
+
+.game-area {
+  display: flex;
+  justify-content: space-between;
 }
 
 .game-headline-left {
@@ -142,7 +150,6 @@ input {
   font-size: 42px;
 }
 
-/* Modal section */
 .bg-modal {
   display: none;
   position: absolute;
@@ -203,34 +210,42 @@ label {
   cursor: pointer;
 }
 
-/* end module*/
-
 .text-group {
   border: none;
   color: white;
   background-color: black;
 }
 
-.input-border {
-  border-radius: 0;
-}
-
 .input-button {
+  flex-shrink: 0;
+  width: max-content;
+  height: 40px;
+  padding: 0 20px;
+  border: 0;
+  color: var(--gray);
+  font-weight: 400;
+  font-size: 1rem;
   text-transform: uppercase;
-  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
 .input-button:hover {
-  color: #fff;
-  background-color: #6c757d;
-  border-color: #6c757d;
+  color: white;
+  background-color: var(--gray);
+}
+
+.room-input-text {
+  margin: 0 10px;
+}
+
+.room-code {
+  min-width: 300px;
 }
 
 .img-invaders {
   width: 60%;
 }
 
-#gameContainer {
-  height: calc(100vh - 52px);
-  width: calc(100% - 2px);
+.copy {
+  width: 60px;
+  height: 60px;
 }
