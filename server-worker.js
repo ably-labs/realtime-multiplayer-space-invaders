@@ -62,30 +62,10 @@ const realtime = Ably.Realtime({
   echoMessages: false,
 });
 
-//wait until connection with Ably is established
+// wait until connection with Ably is established
 realtime.connection.once("connected", () => {
   gameRoom = realtime.channels.get(gameRoomName);
   deadPlayerCh = realtime.channels.get(deadPlayerChName);
-
-  //add and subscribe to the host
-  // alivePlayers++;
-  // totalPlayers++;
-  // gameTickerOn = true;
-  // playerChannels[hostClientId] = realtime.channels.get(
-  //   workerData.hostRoomCode + ":clientChannel-" + hostClientId
-  // );
-  // hostPlayerObject = {
-  //   id: hostClientId,
-  //   invaderAvatarType: avatarTypes[between(0, 3)],
-  //   invaderAvatarColor: avatarColors[colorIndex],
-  //   x: playerXposition(colorIndex),
-  //   y: 20,
-  //   score: 0,
-  //   nickname: hostNickname,
-  //   isAlive: true,
-  // };
-  // players[hostClientId] = hostPlayerObject;
-  // subscribeToPlayerInput(playerChannels[hostClientId], hostClientId);
 
   // subscribe to new players entering the game
   gameRoom.presence.subscribe("enter", (player) => {
@@ -287,6 +267,7 @@ function killWorkerThread() {
   process.exit(0);
 }
 
+// assign player position per color to form pride rainbow
 function playerXposition(index) {
   switch (index) {
     case 0:
@@ -341,8 +322,3 @@ function calcRandomVelocity() {
   randomShipXVelocity *= Math.floor(Math.random() * 2) == 1 ? 1 : -1;
   return randomShipXVelocity;
 }
-
-/*
-KNOWN BUGS
-- Host never 'enters' the game room channel, which makes it difficult to track their leaves
-*/
