@@ -2,14 +2,6 @@
   box-sizing: border-box;
 }
 
-form {
-  background-color: #eee;
-  display: grid;
-  grid-gap: 1em;
-  padding: 1em;
-  max-width: 40ch;
-}
-
 input {
   border: 1px solid silver;
   display: block;
@@ -17,21 +9,6 @@ input {
   margin-bottom: 10px;
   padding: 5px;
   width: 100%;
-}
-
-form button {
-  background-color: #bbbbf2;
-  border: 2px solid currentColor;
-  border-radius: 0.25em;
-  cursor: pointer;
-  font-size: inherit;
-  line-height: 1.4em;
-  padding: 0.25em 1em;
-  max-width: 20ch;
-}
-
-form button:hover {
-  background-color: lavender;
 }
 
 .intro-body {
@@ -66,7 +43,33 @@ form button:hover {
 }
 
 .nickname-input {
-  width: 20%;
+  width: 30%;
+  margin: 0 auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.create-room {
+  text-align: center;
+  display: inline-block;
+  width: 60%;
+  margin: 0 auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.button-center {
+  display: inline-block;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.room-input {
+  flex-wrap: nowrap;
+  width: 60%;
   margin: 0 auto;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -105,4 +108,77 @@ form button:hover {
   margin: 0 auto;
   padding-top: 20px;
   font-size: 42px;
+}
+
+/* Modal section */
+.bg-modal {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  top: 0;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  display: none;
+}
+
+.modal-content {
+  width: 500px;
+  height: 300px;
+  border: 5px solid white;
+  border-radius: 4px;
+  text-align: center;
+  padding: 20px;
+  position: relative;
+}
+
+.button {
+  background-color: #000;
+  border: 2px solid white;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px 28px;
+  color: white;
+  margin-top: 10px;
+  display: inline-block;
+  font-family: "VT323";
+}
+
+.button:hover {
+  background-color: white;
+  color: #000;
+  border: 2px solid black;
+}
+
+.button:active {
+  background-color: white;
+  color: #000;
+  border: 2px solid black;
+}
+
+label {
+  display: block;
+  margin: 15px auto;
+}
+
+.close {
+  position: absolute;
+  top: 0;
+  right: 14px;
+  font-size: 42px;
+  cursor: pointer;
+}
+
+/* end module*/
+
+.text-group {
+  background-color: black;
+  border: none;
+  color: white;
+}
+
+.input-border {
+  border-radius: 0%;
 }

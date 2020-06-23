@@ -1,7 +1,9 @@
-let gameRoom;
+let globalChannel;
 let deadPlayerCh;
+let deadPlayerChName;
 let myClientId;
 let myChannel;
+let myChannelName;
 let gameOn = false;
 let players = {};
 let totalPlayers = 0;
@@ -11,22 +13,71 @@ let bulletThatShotSomeone;
 let bulletOutOfBounds = "";
 let amIalive = false;
 let game;
+let myGameRoomName;
+let myGameRoomCh;
+const BASE_SERVER_URL = "https://space-invaders-multiplayer.herokuapp.com";
 
-const BASE_SERVER_URL = "http://localhost:5000";
 const myNickname = localStorage.getItem("nickname");
+const myGameRoomCode = localStorage.getItem("roomCode");
+const amIHost = localStorage.getItem("isHost");
+
+document.getElementById("room-code").innerHTML =
+  "&nbsp;&nbsp;Other players can join using the code: " + myGameRoomCode;
 
 // connect to Ably
 const realtime = Ably.Realtime({
   authUrl: BASE_SERVER_URL + "/auth",
 });
 
+//show modal
+if (amIHost == "true") {
+  document.querySelector(".bg-modal").style.display = "flex";
+  document.getElementById("game-link").innerHTML =
+    "Invite your friends to join using the code: <br/>" + myGameRoomCode;
+  document.querySelector(".close").addEventListener("click", () => {
+    document.querySelector(".bg-modal").style.display = "none";
+  });
+}
+
+function copyGameCode() {
+  navigator.clipboard.writeText(myGameRoomCode);
+  let copyButton = document.getElementById("copy-button");
+  copyButton.style.backgroundColor = "white";
+  copyButton.style.color = "black";
+  copyButton.style.border = "2px solid black";
+  copyButton.innerHTML = "Copied!";
+}
+
 // once connected to Ably, instantiate channels and launch the game
 realtime.connection.once("connected", () => {
   myClientId = realtime.auth.clientId;
-  gameRoom = realtime.channels.get("game-room");
-  deadPlayerCh = realtime.channels.get("dead-player");
-  myChannel = realtime.channels.get("clientChannel-" + myClientId);
-  gameRoom.presence.enter(myNickname);
+  myGameRoomName = myGameRoomCode + ":primary";
+  deadPlayerChName = myGameRoomCode + ":dead-player";
+  myChannelName = myGameRoomCode + ":clientChannel-" + myClientId;
+  myGameRoomCh = realtime.channels.get(myGameRoomName);
+  deadPlayerCh = realtime.channels.get(deadPlayerChName);
+  myChannel = realtime.channels.get(myChannelName);
+
+  if (amIHost == "true") {
+    const globalGameName = "main-game-thread";
+    globalChannel = realtime.channels.get(globalGameName);
+    myGameRoomCh.subscribe("thread-ready", (msg) => {
+      myGameRoomCh.presence.enter({
+        nickname: myNickname,
+        isHost: amIHost,
+      });
+    });
+    globalChannel.presence.enter({
+      nickname: myNickname,
+      roomCode: myGameRoomCode,
+      isHost: amIHost,
+    });
+  } else if (amIHost != "true") {
+    myGameRoomCh.presence.enter({
+      nickname: myNickname,
+      isHost: amIHost,
+    });
+  }
   game = new Phaser.Game(config);
 });
 
@@ -56,6 +107,30 @@ class GameScene extends Phaser.Scene {
     this.load.spritesheet(
       "avatarC",
       "https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2FInvaderC_00%402x.png?v=1589228654058",
+      {
+        frameWidth: 48,
+        frameHeight: 32,
+      }
+    );
+    this.load.spritesheet(
+      "avatarAanimated",
+      "https://cdn.glitch.com/c0cf9403-8071-4ec0-afd7-8a5293120d79%2FavatarAanimated.png?v=1592436546438",
+      {
+        frameWidth: 48,
+        frameHeight: 32,
+      }
+    );
+    this.load.spritesheet(
+      "avatarBanimated",
+      "https://cdn.glitch.com/c0cf9403-8071-4ec0-afd7-8a5293120d79%2FavatarBanimated.png?v=1592436575703",
+      {
+        frameWidth: 48,
+        frameHeight: 32,
+      }
+    );
+    this.load.spritesheet(
+      "avatarCanimated",
+      "https://cdn.glitch.com/c0cf9403-8071-4ec0-afd7-8a5293120d79%2FavatarCanimated.png?v=1592436609339",
       {
         frameWidth: 48,
         frameHeight: 32,
@@ -146,7 +221,7 @@ class GameScene extends Phaser.Scene {
       "bullet",
       "https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Fbullet.png?v=1589229887570",
       {
-        frameWidth: 32,
+        frameWidth: 48,
         frameHeight: 48,
       }
     );
@@ -157,6 +232,34 @@ class GameScene extends Phaser.Scene {
         frameWidth: 48,
         frameHeight: 48,
       }
+    );
+    this.load.audio(
+      "move1",
+      "https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Ffastinvader1.mp3?v=1589983955301"
+    );
+    this.load.audio(
+      "move2",
+      "https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Ffastinvader2.mp3?v=1589983959381"
+    );
+    this.load.audio(
+      "move3",
+      "https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Ffastinvader3.mp3?v=1589983969580"
+    );
+    this.load.audio(
+      "move4",
+      "https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Ffastinvader4.mp3?v=1589983973991"
+    );
+    this.load.audio(
+      "myDeath",
+      "https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Fexplosion.mp3?v=1589984025058"
+    );
+    this.load.audio(
+      "opponentDeath",
+      "https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Finvaderkilled.mp3?v=1589983981160"
+    );
+    this.load.audio(
+      "shoot",
+      "https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Fshoot.mp3?v=1589983990745"
     );
   }
   create() {
@@ -174,8 +277,47 @@ class GameScene extends Phaser.Scene {
       hideOnComplete: true,
     });
 
+    this.anims.create({
+      key: "animateA",
+      frames: this.anims.generateFrameNumbers("avatarAanimated"),
+      frameRate: 2,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "animateB",
+      frames: this.anims.generateFrameNumbers("avatarBanimated"),
+      frameRate: 2,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "animateC",
+      frames: this.anims.generateFrameNumbers("avatarCanimated"),
+      frameRate: 2,
+      repeat: -1,
+    });
+
+    this.soundLoop = 0;
+    this.shootSound = this.sound.add("shoot");
+    this.move1 = this.sound.add("move1");
+    this.move2 = this.sound.add("move2");
+    this.move3 = this.sound.add("move3");
+    this.move4 = this.sound.add("move4");
+    this.myDeathSound = this.sound.add("myDeath");
+    this.opponentDeathSound = this.sound.add("opponentDeath");
+    this.movingSounds = [this.move1, this.move2, this.move3, this.move4];
+
+    setInterval(() => {
+      this.movingSounds[this.soundLoop].play();
+      this.soundLoop++;
+      if (this.soundLoop == 4) {
+        this.soundLoop = 0;
+      }
+    }, 500);
+
     // subscribe to the game tick
-    gameRoom.subscribe("game-state", (msg) => {
+    myGameRoomCh.subscribe("game-state", (msg) => {
       if (msg.data.gameOn) {
         gameOn = true;
         if (msg.data.shipBody["0"]) {
@@ -199,13 +341,13 @@ class GameScene extends Phaser.Scene {
     });
 
     // subscribe to the game over event and switch to a new page
-    gameRoom.subscribe("game-over", (msg) => {
+    myGameRoomCh.subscribe("game-over", (msg) => {
       gameOn = false;
       localStorage.setItem("totalPlayers", msg.data.totalPlayers);
       localStorage.setItem("winner", msg.data.winner);
       localStorage.setItem("firstRunnerUp", msg.data.firstRunnerUp);
       localStorage.setItem("secondRunnerUp", msg.data.secondRunnerUp);
-      gameRoom.detach();
+      myGameRoomCh.detach();
       deadPlayerCh.detach();
       myChannel.detach();
       if (msg.data.winner == "Nobody") {
@@ -223,7 +365,7 @@ class GameScene extends Phaser.Scene {
         this.ship.x = latestShipPosition;
       } else {
         this.ship = this.physics.add
-          .sprite(latestShipPosition, config.height - 32, "ship")
+          .sprite(latestShipPosition, config.scale.height - 32, "ship")
           .setOrigin(0.5, 0.5);
         this.ship.x = latestShipPosition;
       }
@@ -267,12 +409,14 @@ class GameScene extends Phaser.Scene {
       } else if (!this.avatars[avatarId] && players[item].isAlive) {
         if (players[item].id != myClientId) {
           let avatarName =
-            "avatar" +
-            players[item].invaderAvatarType +
-            players[item].invaderAvatarColor;
+            "avatar" + players[item].invaderAvatarType + "animated";
           this.avatars[avatarId] = this.physics.add
             .sprite(players[item].x, players[item].y, avatarName)
-            .setOrigin(0.5, 0.5);
+            .setOrigin(0.5, 0.5)
+            .setTintFill(players[item].invaderAvatarColor);
+          this.avatars[avatarId].play(
+            "animate" + players[item].invaderAvatarType
+          );
           this.avatars[avatarId].setCollideWorldBounds(true);
           document.getElementById("join-leave-updates").innerHTML =
             players[avatarId].nickname + " joined";
@@ -280,10 +424,14 @@ class GameScene extends Phaser.Scene {
             document.getElementById("join-leave-updates").innerHTML = "";
           }, 2000);
         } else if (players[item].id == myClientId) {
-          let avatarName = "avatar" + players[item].invaderAvatarType;
+          let avatarName =
+            "avatar" + players[item].invaderAvatarType + "animated";
           this.avatars[avatarId] = this.physics.add
             .sprite(players[item].x, players[item].y, avatarName)
             .setOrigin(0.5, 0.5);
+          this.avatars[avatarId].play(
+            "animate" + players[item].invaderAvatarType
+          );
           this.avatars[avatarId].setCollideWorldBounds(true);
           amIalive = true;
         }
@@ -299,6 +447,11 @@ class GameScene extends Phaser.Scene {
   // play the explosion animation and destroy the avatar
   explodeAndKill(deadPlayerId) {
     this.avatars[deadPlayerId].disableBody(true, true);
+    if (deadPlayerId == myClientId) {
+      this.myDeathSound.play();
+    } else {
+      this.opponentDeathSound.play();
+    }
     let explosion = new Explosion(
       this,
       this.avatars[deadPlayerId].x,
@@ -332,9 +485,9 @@ class GameScene extends Phaser.Scene {
   createBullet(bulletObject) {
     let bulletId = bulletObject.id;
     this.visibleBullets[bulletId].bulletSprite = this.physics.add
-      .sprite(this.ship.x - 8, bulletObject.y, "bullet")
+      .sprite(this.ship.x + 23, bulletObject.y, "bullet")
       .setOrigin(0.5, 0.5);
-
+    this.shootSound.play();
     // add an overlap callback if the current player is still alive
     if (amIalive) {
       if (
@@ -365,11 +518,16 @@ class GameScene extends Phaser.Scene {
 
 //game configuration
 const config = {
-  width: 1400,
-  height: 750,
+  type: Phaser.AUTO,
   backgroundColor: "#FFFFF",
+  scale: {
+    parent: "gameContainer",
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: 1400,
+    height: 700,
+  },
   canvasStyle: "border:1px solid #ffffff;",
-  parent: "gameContainer",
   scene: [GameScene],
   physics: {
     default: "arcade",
