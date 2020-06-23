@@ -95,7 +95,20 @@ input {
 
 .game-area {
   display: flex;
-  justify-content: space-between;
+}
+
+#score {
+  width: 100px; 
+  margin-right: 10px;
+}
+
+#room-code {
+  width: 480px;
+}
+
+#deaths {
+  margin-left: auto;
+  text-align: right;
 }
 
 .game-headline-left {
@@ -222,5 +235,5 @@ label {
 }
 
 #gameContainer {
-  height: calc(100vh - 42px);
+  height: calc(100vh - 52px);
 }
