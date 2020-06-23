@@ -1,90 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="utf-8" />
     <title>Space Invaders</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Multiplayer space invaders" />
-    <link
-      id="favicon"
-      rel="icon"
-      href="https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Ffavicon.ico?v=1592927412879"
-      type="image/x-icon"
-    />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
-      crossorigin="anonymous"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="icon" href="https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Ffavicon.ico?v=1592927412879" type="image/x-icon" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap"  />
     <link rel="stylesheet" href="/style.css" />
   </head>
+
   <body class="intro-body">
-    <img
-      alt="Space invaders"
-      width="580"
-      height="250"
-      src="https://s3.amazonaws.com/files.ably.io/tutorials/multiplayer-space-invaders/headerAbly.png"
-    />
-    <div class="game-instructions">
-      <p>
-        Use the arrow keys on your keyboard to move your avatar left or right to
-        escape the bullets from the spaceship.<br />
-        Your goal is to make it to the other side, alive!
-      </p>
-    </div>
-    <div class="input-group nickname-input">
-      <input
-        type="text"
-        class="input-border text-center form-control"
-        placeholder="Enter your nickname"
-        aria-label="Enter your nickname"
-        aria-describedby="basic-addon2"
-        id="nickname"
-      />
-    </div>
-    <div class="input-group room-input">
-      <div class="input-group-prepend">
-        <button
-          class="input-border input-group-text"
-          id="go-span"
-          onclick="hostNewGame()"
-          >LAUNCH A NEW ROOM</span
-        >
-      </div>
-      <div class="input-group-prepend">
-        <p class="input-group-text text-group">or</p>
-      </div>
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Enter the room code"
-        aria-label="Enter the room code"
-        aria-describedby="basic-addon2"
-        id="room-code"
-      />
-      <div class="input-group-append">
-        <button
-          class="input-border input-group-text"
-          id="go-span"
-          onclick="joinRoom()"
-          >JOIN ROOM
-      </button>
-      </div>
+    <img class="intro-img" src="https://s3.amazonaws.com/files.ably.io/tutorials/multiplayer-space-invaders/headerAbly.png" alt="Space invaders"  />
+ 
+    <p class="game-text game-instructions">
+      Use the arrow keys on your keyboard to move your avatar left or right to escape the bullets from the spaceship.<br />
+      Your goal is to make it to the other side, alive!
+    </p>
+
+    <input type="text" class="nickname" placeholder="Enter your nickname" aria-label="Enter your nickname" id="nickname" />
+   
+    <div class="room-input">
+      <button class="input-button" id="go-span" onclick="hostNewGame()">Launch a new room</button>
+      <span class="room-input-text">or</span>
+      <input type="text" class="room-code" placeholder="Enter the room code" aria-label="Enter the room code" id="room-code" />
+      <button class="input-button" id="go-span" onclick="joinRoom()">Join room</button>
+      
     </div>
 
-    <img
-      alt="Invader avatars"
-      width="60%"
-      height="300"
-      src="https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Fallinvaders.png?v=1589884216800"
-      class="img-fluid"
-    />
+    <img class="img-fluid img-invaders" src="https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Fallinvaders.png?v=1589884216800" alt="Invader avatars"/>
+
     <script src="/intro.js"></script>
   </body>
+
 </html>

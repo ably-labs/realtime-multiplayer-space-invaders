@@ -21,7 +21,7 @@ const myGameRoomCode = localStorage.getItem("roomCode");
 const amIHost = localStorage.getItem("isHost");
 
 document.getElementById("room-code").innerHTML =
-  "&nbsp;&nbsp;Other players can join using the code: " + myGameRoomCode;
+  "Other players can join using the code: " + myGameRoomCode;
 
 // connect to Ably
 const realtime = Ably.Realtime({
