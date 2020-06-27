@@ -14,7 +14,7 @@ const p2 = require("p2");
 const app = express();
 const ABLY_API_KEY = process.env.ABLY_API_KEY;
 const globalGameName = "main-game-thread";
-const GAME_ROOM_CAPACITY = 6;
+const GAME_ROOM_CAPACITY = 2;
 let globalChannel;
 let activeGameRooms = {};
 
