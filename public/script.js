@@ -315,7 +315,8 @@ class GameScene extends Phaser.Scene {
           this.avatars[avatarId] = this.physics.add
             .sprite(players[item].x, players[item].y, avatarName)
             .setOrigin(0.5, 0.5)
-            .setTintFill(players[item].invaderAvatarColor);
+            .setTintFill(players[item].invaderAvatarColor.toString());
+          console.log(players[item].invaderAvatarColor);
           this.avatars[avatarId].play(
             "animate" + players[item].invaderAvatarType
           );

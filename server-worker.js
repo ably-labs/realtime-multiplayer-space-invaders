@@ -27,14 +27,6 @@ let playerChannels = {};
 let shipX = between(20, CANVAS_WIDTH - 20);
 let shipY = SHIP_PLATFORM;
 let colorIndex = 0;
-let avatarColors = [
-  "0xe40303",
-  "0xff8c00",
-  "0xffed00",
-  "0x008026",
-  "0x004dff",
-  "0x750787",
-];
 let avatarTypes = ["A", "B", "C"];
 let gameOn = false;
 let alivePlayers = 0;
@@ -93,7 +85,7 @@ realtime.connection.once("connected", () => {
     newPlayerObject = {
       id: newPlayerId,
       invaderAvatarType: avatarTypes[between(0, 3)],
-      invaderAvatarColor: avatarColors[colorIndex],
+      invaderAvatarColor: randomColorGenerator(),
       x: playerXposition(colorIndex),
       y: 20,
       score: 0,
@@ -335,4 +327,12 @@ function calcRandomVelocity() {
   let randomShipXVelocity = between(20, 200);
   randomShipXVelocity *= Math.floor(Math.random() * 2) == 1 ? 1 : -1;
   return randomShipXVelocity;
+}
+
+// method to randomly generate a color for the player
+function randomColorGenerator() {
+  const randomColor = "000000".replace(/0/g, function () {
+    return (~~(Math.random() * 16)).toString(16);
+  });
+  return "0x" + randomColor;
 }

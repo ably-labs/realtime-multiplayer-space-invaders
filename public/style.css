@@ -56,7 +56,7 @@ input {
 
 .game-instructions {
   width: 80%;
-  margin: 0 auto;
+  margin: 20px auto;
   padding-top: 20px;
 }
 
@@ -97,7 +97,7 @@ input {
 }
 
 #score {
-  width: 100px; 
+  width: 100px;
   margin-right: 10px;
 }
 
