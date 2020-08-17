@@ -6,12 +6,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Multiplayer space invaders" />
-    <link rel="icon" href="https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Ffavicon.ico?v=1592927412879" type="image/x-icon" />
-    <link rel="stylesheet"href="https://fonts.googleapis.com/css2?family=VT323&display=swap" />
+    <link
+      rel="icon"
+      href="https://cdn.glitch.com/f66772e3-bbf6-4f6d-b5d5-94559e3c1c6f%2Ffavicon.ico?v=1592927412879"
+      type="image/x-icon"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+    />
     <link rel="stylesheet" href="/style.css" />
-    
+
     <script src="//cdn.jsdelivr.net/npm/phaser@3.23.0/dist/phaser.min.js"></script>
-    <script lang="text/javascript" src="https://cdn.ably.io/lib/ably.min-1.js"></script>
+    <script
+      lang="text/javascript"
+      src="https://cdn.ably.io/lib/ably.min-1.js"
+    ></script>
     <script src="/intro.js"></script>
     <script src="/explosion.js"></script>
     <script src="/script.js" defer></script>
@@ -21,19 +31,41 @@
     <div class="bg-modal">
       <div class="modal-content">
         <div class="close">x</div>
-        <img class="copy" src="https://user-images.githubusercontent.com/5900152/84948428-a3c6c900-b0e3-11ea-9ef5-0b1050cd8daf.png" alt="copy icon" />
+        <img
+          class="copy"
+          src="https://user-images.githubusercontent.com/5900152/84948428-a3c6c900-b0e3-11ea-9ef5-0b1050cd8daf.png"
+          alt="copy icon"
+        />
         <label id="game-link"></label>
-        <button onclick="copyGameCode()" id="copy-button" type="button" class="button">
+        <button
+          onclick="copyGameCode()"
+          id="copy-button"
+          type="button"
+          class="button"
+        >
           Copy game link
         </button>
       </div>
     </div>
-    <div class="game-area" id="game-area">
-      <div id="score">Score: 0</div>
-      <div id="room-code">Game room 0</div>
-      <div id="join-leave-updates"></div>
-      <div id="deaths"></div>
+    <div class="container">
+      <div class="info-bar row row-cols-1 row-cols-sm-2 row-cols-md-4">
+        <div id="score" class="col">Score: 0</div>
+        <div id="room-code" class="col">Game room 0</div>
+        <div id="join-leave-updates" class="col"></div>
+        <div id="deaths" class="col"></div>
+      </div>
+      <div class="card game-card">
+        <div id="gameContainer"></div>
+      </div>
+      <div class="start-btn-div">
+        <button
+          id="btn-startgame"
+          class="btn btn-primary"
+          onclick="startGame()"
+        >
+          Start game
+        </button>
+      </div>
     </div>
-    <div class="game-div" id="gameContainer"></div>
   </body>
 </html>

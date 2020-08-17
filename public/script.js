@@ -1,6 +1,4 @@
 let globalChannel;
-let deadPlayerCh;
-let deadPlayerChName;
 let myClientId;
 let myChannel;
 let myChannelName;
@@ -19,6 +17,7 @@ let myGameRoomCh;
 const myNickname = localStorage.getItem("nickname");
 const myGameRoomCode = localStorage.getItem("roomCode");
 const amIHost = localStorage.getItem("isHost");
+const startGameBtn = document.getElementById("btn-startgame");
 
 document.getElementById("room-code").innerHTML =
   "Other players can join using the code: " + myGameRoomCode;
@@ -51,10 +50,8 @@ function copyGameCode() {
 realtime.connection.once("connected", () => {
   myClientId = realtime.auth.clientId;
   myGameRoomName = myGameRoomCode + ":primary";
-  deadPlayerChName = myGameRoomCode + ":dead-player";
   myChannelName = myGameRoomCode + ":clientChannel-" + myClientId;
   myGameRoomCh = realtime.channels.get(myGameRoomName);
-  deadPlayerCh = realtime.channels.get(deadPlayerChName);
   myChannel = realtime.channels.get(myChannelName);
 
   if (amIHost == "true") {
@@ -71,14 +68,22 @@ realtime.connection.once("connected", () => {
       roomCode: myGameRoomCode,
       isHost: amIHost,
     });
+    startGameBtn.style.display = "inline-block";
   } else if (amIHost != "true") {
     myGameRoomCh.presence.enter({
       nickname: myNickname,
       isHost: amIHost,
     });
+    startGameBtn.style.display = "none";
   }
   game = new Phaser.Game(config);
 });
+
+function startGame() {
+  myChannel.publish("start-game", {
+    start: true,
+  });
+}
 
 // primary game scene
 class GameScene extends Phaser.Scene {
@@ -250,7 +255,6 @@ class GameScene extends Phaser.Scene {
       localStorage.setItem("firstRunnerUp", msg.data.firstRunnerUp);
       localStorage.setItem("secondRunnerUp", msg.data.secondRunnerUp);
       myGameRoomCh.detach();
-      deadPlayerCh.detach();
       myChannel.detach();
       if (msg.data.winner == "Nobody") {
         window.location.replace("/gameover");
@@ -410,7 +414,7 @@ class GameScene extends Phaser.Scene {
   // publish an eventto the server if the current player is hit
   publishMyDeathNews(bullet, avatar) {
     if (amIalive) {
-      deadPlayerCh.publish("dead-notif", {
+      myChannel.publish("dead-notif", {
         killerBulletId: bulletThatShotMe,
         deadPlayerId: myClientId,
       });
@@ -430,7 +434,7 @@ const config = {
     width: 1400,
     height: 700,
   },
-  canvasStyle: "border:1px solid #ffffff;",
+  //canvasStyle: "border:1px solid #ffffff;",
   scene: [GameScene],
   physics: {
     default: "arcade",

@@ -33,11 +33,9 @@ let alivePlayers = 0;
 let totalPlayers = 0;
 let gameRoomName = workerData.hostRoomCode + ":primary";
 let roomCode = workerData.hostRoomCode;
-let deadPlayerChName = workerData.hostRoomCode + ":dead-player";
 let hostClientId = workerData.hostClientId;
 let hostNickname = workerData.hostNickname;
 let gameRoom;
-let deadPlayerCh;
 let gameTickerOn = false;
 let bulletTimer = 0;
 let shipBody;
@@ -58,7 +56,6 @@ const realtime = Ably.Realtime({
 // wait until connection with Ably is established
 realtime.connection.once("connected", () => {
   gameRoom = realtime.channels.get(gameRoomName);
-  deadPlayerCh = realtime.channels.get(deadPlayerChName);
 
   // subscribe to new players entering the game
   gameRoom.presence.subscribe("enter", (player) => {
@@ -93,9 +90,6 @@ realtime.connection.once("connected", () => {
       isAlive: true,
     };
     players[newPlayerId] = newPlayerObject;
-    if (totalPlayers === MIN_PLAYERS_TO_START_GAME) {
-      startShipAndBullets();
-    }
     subscribeToPlayerInput(playerChannels[newPlayerId], newPlayerId);
   });
 
@@ -111,18 +105,6 @@ realtime.connection.once("connected", () => {
     delete players[leavingPlayer];
     if (totalPlayers <= 0) {
       killWorkerThread();
-    }
-  });
-
-  // subscribe to players being shot
-  deadPlayerCh.subscribe("dead-notif", (msg) => {
-    players[msg.data.deadPlayerId].isAlive = false;
-    killerBulletId = msg.data.killerBulletId;
-    alivePlayers--;
-    if (alivePlayers == 0) {
-      setTimeout(() => {
-        finishGame("");
-      }, 1000);
     }
   });
   gameRoom.publish("thread-ready", {
@@ -198,6 +180,21 @@ function subscribeToPlayerInput(channelInstance, playerId) {
       }
     }
   });
+  channelInstance.subscribe("start-game", (msg) => {
+    startShipAndBullets();
+  });
+
+  // subscribe to players being shot
+  channelInstance.subscribe("dead-notif", (msg) => {
+    players[msg.data.deadPlayerId].isAlive = false;
+    killerBulletId = msg.data.killerBulletId;
+    alivePlayers--;
+    if (alivePlayers == 0) {
+      setTimeout(() => {
+        finishGame("");
+      }, 1000);
+    }
+  });
 }
 
 // update the y position of each player when the game starts
@@ -219,6 +216,7 @@ function startDownwardMovement(playerId) {
 
 // finish the game
 function finishGame(playerId) {
+  console.log("finished");
   let firstRunnerUpName = "";
   let secondRunnerUpName = "";
   let winnerName = "Nobody";
