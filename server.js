@@ -64,6 +64,7 @@ app.get("/gameplay", (request, response) => {
     ) {
       response.sendFile(__dirname + "/views/index.html");
     } else {
+      console.log("here");
       response.sendFile(__dirname + "/views/gameRoomFull.html");
     }
   } else if (isReqHost) {
@@ -71,6 +72,7 @@ app.get("/gameplay", (request, response) => {
   } else {
     response.sendFile(__dirname + "/views/gameRoomFull.html");
   }
+  console.log(JSON.stringify(activeGameRooms));
 });
 
 app.get("/winner", (request, response) => {

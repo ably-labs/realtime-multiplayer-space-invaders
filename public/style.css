@@ -28,8 +28,8 @@ input {
 }
 
 .intro-img {
-  width: 60%;
-  max-width: 580px;
+  width: 80%;
+  max-width: 800px;
 }
 
 .room-full-body {
@@ -56,8 +56,9 @@ input {
 
 .game-instructions {
   width: 80%;
-  margin: 0 auto;
+  margin: 20px auto;
   padding-top: 20px;
+  font-size: 30px;
 }
 
 .create-room {
@@ -80,7 +81,7 @@ input {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 60%;
+  width: 70%;
   margin: 0 auto;
   padding: 10px 0;
 }
@@ -92,12 +93,8 @@ input {
   text-align: center;
 }
 
-.game-area {
-  display: flex;
-}
-
 #score {
-  width: 100px; 
+  width: 100px;
   margin-right: 10px;
 }
 
@@ -115,6 +112,16 @@ input {
   justify-content: space-between;
 }
 
+.game-div {
+  margin: 20px;
+  max-width: 1200px;
+  text-align: center;
+}
+
+.game-div-container {
+  text-align: center;
+  display: block;
+}
 .game-headline-left {
   float: left;
 }
@@ -248,4 +255,40 @@ label {
 .copy {
   width: 60px;
   height: 60px;
+}
+
+/*======================*/
+
+.game-card {
+  margin: 10px 50px;
+  padding: 50px;
+  background-image: url("https://user-images.githubusercontent.com/5900152/90127067-85382380-dd5c-11ea-87b1-4946c0df92d8.jpg");
+}
+
+.info-bar {
+  display: flex;
+  padding: 10px 50px;
+  justify-content: space-evenly;
+}
+
+.start-btn-div {
+  text-align: center;
+  font-family: inherit;
+}
+
+.start-info-card {
+  width: 50%;
+  margin: 20px;
+}
+
+.nav-tabs {
+  justify-content: center;
+}
+
+.input-box {
+  text-align: center;
+}
+
+.create-wait-msg {
+  display: none;
 }

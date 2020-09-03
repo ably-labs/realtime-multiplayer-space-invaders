@@ -1,11 +1,11 @@
 let nickname = "";
-let nicknameInput = document.getElementById("nickname");
 let roomCode = "";
 
 function hostNewGame() {
   localStorage.clear();
-  roomCode = getRandomRoomId();
+  let nicknameInput = document.getElementById("create-nickname");
   nickname = nicknameInput.value;
+  roomCode = getRandomRoomId();
   localStorage.setItem("isHost", true);
   localStorage.setItem("nickname", nickname);
   localStorage.setItem("roomCode", roomCode);
@@ -14,8 +14,9 @@ function hostNewGame() {
 
 function joinRoom() {
   localStorage.clear();
+  let nicknameInput = document.getElementById("join-nickname");
   nickname = nicknameInput.value;
-  roomCode = document.getElementById("room-code").value;
+  roomCode = document.getElementById("join-room-code").value;
   localStorage.setItem("isHost", false);
   localStorage.setItem("nickname", nickname);
   localStorage.setItem("roomCode", roomCode);
