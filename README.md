@@ -1,6 +1,6 @@
 # Realtime multiplayer game of Space Invaders
 
-This project runs a relatime multiplayer version of the classic retro game, Space Invaders.
+This project runs a realtime multiplayer version of the classic retro game, Space Invaders.
 
 ![Preview of the game](https://user-images.githubusercontent.com/5900152/84092843-7ea1ce80-a9f0-11ea-809d-41cd20fb8e59.gif)
 
@@ -19,4 +19,4 @@ This project runs a relatime multiplayer version of the classic retro game, Spac
 5. Again in the `server.js` file, update `process.env.PORT` to use a port number of your choice directly or add a `PORT` variable in your .env file
 6. You can also update the `MIN_PLAYERS_TO_START_GAME` if you'd like to have more than three people play the game
 
-More specifics to come, but in the meantime please [reach out to me on Twitter](https://www.twitter.com/Srushtika) for any questions.
+Please [reach out to me on Twitter](https://www.twitter.com/Srushtika) for any questions.
