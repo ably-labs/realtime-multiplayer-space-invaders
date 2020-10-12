@@ -122,6 +122,7 @@ input {
   text-align: center;
   display: block;
 }
+
 .game-headline-left {
   float: left;
 }
@@ -255,6 +256,21 @@ label {
 .copy {
   width: 60px;
   height: 60px;
+}
+
+.sound-control {
+  display: flex;
+  width: 100px;
+  margin-right: 10px;
+}
+
+.sound-label {
+  margin: 0 15px;
+}
+
+.sound-checkbox {
+  padding: 0;
+  height: 25px;
 }
 
 /*======================*/
