@@ -18,7 +18,7 @@ const myNickname = localStorage.getItem("nickname");
 const myGameRoomCode = localStorage.getItem("roomCode");
 const amIHost = localStorage.getItem("isHost");
 const startGameBtn = document.getElementById("btn-startgame");
-const soundControl = document.getElementById("sound");
+const audioControlChkbox = document.getElementById("audio-chkbox");
 
 document.getElementById("room-code").innerHTML =
   "Other players can join using the code: " + myGameRoomCode;
@@ -217,7 +217,7 @@ class GameScene extends Phaser.Scene {
     this.movingSounds = [this.move1, this.move2, this.move3, this.move4];
 
     setInterval(() => {
-      if (soundControl.checked === true) {
+      if (audioControlChkbox.checked === true) {
         this.movingSounds[this.soundLoop].play();
         this.soundLoop++;
         if (this.soundLoop == 4) {
@@ -358,11 +358,11 @@ class GameScene extends Phaser.Scene {
   explodeAndKill(deadPlayerId) {
     this.avatars[deadPlayerId].disableBody(true, true);
     if (deadPlayerId == myClientId) {
-      if (soundControl.checked === true) {
+      if (audioControlChkbox.checked === true) {
         this.myDeathSound.play();
       }
     } else {
-      if (soundControl.checked === true) {
+      if (audioControlChkbox.checked === true) {
         this.opponentDeathSound.play();
       }
     }
@@ -401,7 +401,7 @@ class GameScene extends Phaser.Scene {
     this.visibleBullets[bulletId].bulletSprite = this.physics.add
       .sprite(this.ship.x + 23, bulletObject.y, "bullet")
       .setOrigin(0.5, 0.5);
-    if (soundControl.checked === true) {
+    if (audioControlChkbox.checked === true) {
       this.shootSound.play();
     }
     // add an overlap callback if the current player is still alive
@@ -451,4 +451,5 @@ const config = {
       debug: false,
     },
   },
+
 };

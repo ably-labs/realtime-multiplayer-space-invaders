@@ -258,17 +258,17 @@ label {
   height: 60px;
 }
 
-.sound-control {
+.audio-control {
   display: flex;
   width: 100px;
   margin-right: 10px;
 }
 
-.sound-label {
+.audio-label {
   margin: 0 15px;
 }
 
-.sound-checkbox {
+.audio-chkbox {
   padding: 0;
   height: 25px;
 }
@@ -307,4 +307,5 @@ label {
 
 .create-wait-msg {
   display: none;
+
 }
