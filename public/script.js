@@ -18,6 +18,7 @@ const myNickname = localStorage.getItem("nickname");
 const myGameRoomCode = localStorage.getItem("roomCode");
 const amIHost = localStorage.getItem("isHost");
 const startGameBtn = document.getElementById("btn-startgame");
+const audioControlChkbox = document.getElementById("audio-chkbox");
 
 document.getElementById("room-code").innerHTML =
   "Other players can join using the code: " + myGameRoomCode;
@@ -216,10 +217,12 @@ class GameScene extends Phaser.Scene {
     this.movingSounds = [this.move1, this.move2, this.move3, this.move4];
 
     setInterval(() => {
-      this.movingSounds[this.soundLoop].play();
-      this.soundLoop++;
-      if (this.soundLoop == 4) {
-        this.soundLoop = 0;
+      if (audioControlChkbox.checked === true) {
+        this.movingSounds[this.soundLoop].play();
+        this.soundLoop++;
+        if (this.soundLoop == 4) {
+          this.soundLoop = 0;
+        }
       }
     }, 500);
 
@@ -273,9 +276,9 @@ class GameScene extends Phaser.Scene {
         this.ship = this.physics.add
           .sprite(latestShipPosition, config.scale.height - 32, "ship")
           .setOrigin(0.5, 0.5);
+
         this.ship.x = latestShipPosition;
       }
-
       // create and update the position of the bullets
       for (let item in this.visibleBullets) {
         if (this.visibleBullets[item].toLaunch) {
@@ -355,9 +358,13 @@ class GameScene extends Phaser.Scene {
   explodeAndKill(deadPlayerId) {
     this.avatars[deadPlayerId].disableBody(true, true);
     if (deadPlayerId == myClientId) {
-      this.myDeathSound.play();
+      if (audioControlChkbox.checked === true) {
+        this.myDeathSound.play();
+      }
     } else {
-      this.opponentDeathSound.play();
+      if (audioControlChkbox.checked === true) {
+        this.opponentDeathSound.play();
+      }
     }
     let explosion = new Explosion(
       this,
@@ -394,7 +401,9 @@ class GameScene extends Phaser.Scene {
     this.visibleBullets[bulletId].bulletSprite = this.physics.add
       .sprite(this.ship.x + 23, bulletObject.y, "bullet")
       .setOrigin(0.5, 0.5);
-    this.shootSound.play();
+    if (audioControlChkbox.checked === true) {
+      this.shootSound.play();
+    }
     // add an overlap callback if the current player is still alive
     if (amIalive) {
       if (
@@ -442,4 +451,5 @@ const config = {
       debug: false,
     },
   },
+
 };

@@ -122,6 +122,7 @@ input {
   text-align: center;
   display: block;
 }
+
 .game-headline-left {
   float: left;
 }
@@ -257,6 +258,21 @@ label {
   height: 60px;
 }
 
+.audio-control {
+  display: flex;
+  width: 100px;
+  margin-right: 10px;
+}
+
+.audio-label {
+  margin: 0 15px;
+}
+
+.audio-chkbox {
+  padding: 0;
+  height: 25px;
+}
+
 /*======================*/
 
 .game-card {
@@ -291,4 +307,5 @@ label {
 
 .create-wait-msg {
   display: none;
+
 }
