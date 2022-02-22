@@ -12,7 +12,10 @@ const express = require("express");
 const Ably = require("ably");
 const p2 = require("p2");
 const app = express();
-const ABLY_API_KEY = process.env.ABLY_API_KEY;
+const {ABLY_API_KEY, PORT} = process.env;
+
+console.log("Environment variables", envConfig)
+
 const globalGameName = "main-game-thread";
 const GAME_ROOM_CAPACITY = 6;
 let globalChannel;
@@ -83,7 +86,7 @@ app.get("/gameover", (request, response) => {
   response.sendFile(__dirname + "/views/gameover.html");
 });
 
-const listener = app.listen(process.env.PORT, () => {
+const listener = app.listen(PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
 
