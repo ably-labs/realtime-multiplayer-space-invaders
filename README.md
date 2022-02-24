@@ -23,4 +23,5 @@ You will require an Ably API Key, to run this demo, [sign-up for FREE account](h
 1. (Optional) You can update the `MIN_PLAYERS_TO_START_GAME` to enforce a minimum number of players. (see `server-worker.js`)
 1. Run the server with `node server.js` and then open a brower to [localhost:8080](http://localhost:8080)
 
-Please [reach out to me on Twitter](https://www.twitter.com/Srushtika) for any questions.
+Please [reach out to me on Twitter](https://www.twitter.com/Srushtika) for any questions, 
+or follow us [@ablyrealtime](https://twitter.com/ablyrealtime)
