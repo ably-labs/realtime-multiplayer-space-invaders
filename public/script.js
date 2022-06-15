@@ -24,7 +24,7 @@ document.getElementById("room-code").innerHTML =
   "Other players can join using the code: " + myGameRoomCode;
 
 // connect to Ably
-const realtime = Ably.Realtime({
+const realtime = new Ably.Realtime({
   authUrl: "/auth",
 });
 
