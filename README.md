@@ -16,7 +16,7 @@ You will require an Ably API Key, to run this demo, [sign-up for FREE account](h
 
 # How to run this game
 
-1. Create a free account with [Ably Realtime](https://www.ably.io) and obtain an API Key
+1. Create a free account with [Ably Realtime](https://www.ably.com) and obtain an API Key
 1. Clone this repo locally
 1. Navigate to the project folder and run `npm install` to install the dependencies
 1. Rename `.env-sample` to `.env`, then edit the file and add your Ably API key and prefered PORT (default 8080).
