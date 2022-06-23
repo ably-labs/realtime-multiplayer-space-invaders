@@ -48,7 +48,7 @@ let copyOfShipBody = {
 };
 
 // instantiate to Ably
-const realtime = Ably.Realtime({
+const realtime = new Ably.Realtime({
   key: ABLY_API_KEY,
   echoMessages: false,
 });
