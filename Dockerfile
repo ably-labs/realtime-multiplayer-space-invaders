@@ -2,7 +2,7 @@ FROM node as builder
 
 WORKDIR /app
 
-COPY Procfile  package-lock.json  package.json  server-worker.js  server.js .env ./
+COPY Procfile  package-lock.json  package.json  server-worker.js  server.js ./
 ADD views views
 ADD public public
 
