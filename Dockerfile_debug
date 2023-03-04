@@ -8,9 +8,9 @@ ADD public public
 
 RUN npm install --prod; touch .env
 
-FROM astefanutti/scratch-node
-# FROM ubuntu:jammy
-# RUN apt-get update && apt-get install -y npm
+# FROM astefanutti/scratch-node
+FROM ubuntu:jammy
+RUN apt-get update && apt-get install -y npm
 
 COPY --from=builder /app .
 
