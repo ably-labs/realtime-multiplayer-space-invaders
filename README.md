@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> This project is no longer being maintained as of March 2026.
+
 ![](./public/space-invaders-hero.svg)
 
 # Realtime multiplayer game of Space Invaders
